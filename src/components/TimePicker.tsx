@@ -88,6 +88,31 @@ export function TimePicker({
         return { newHour, newPeriod }
     }
 
+    const get24Hour = () => {
+        let hNum = parseInt(hourStr, 10) || 0
+        if (hNum > 12 && hNum <= 23) {
+            return hNum
+        } else if (hNum === 0 || hNum === 24) {
+            return 0
+        } else {
+            if (period === "AM") {
+                return hNum === 12 ? 0 : hNum
+            } else {
+                return hNum === 12 ? 12 : hNum + 12
+            }
+        }
+    }
+
+    const setFrom24 = (hour24: number, min: number) => {
+        const p: Period = hour24 < 12 ? "AM" : "PM"
+        const displayH = hour24 % 12 || 12
+        const clampedMin = clampMinute(min)
+        setPeriod(p)
+        setHourStr(pad2(displayH))
+        setMinuteStr(pad2(clampedMin))
+        onChange?.({ hour: displayH, minute: clampedMin, period: p })
+    }
+
     const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let input = e.target.value.replace(/\D/g, "").slice(0, 4)
 
@@ -150,6 +175,50 @@ export function TimePicker({
         }
     }
 
+    const handleHourKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "ArrowUp") {
+            e.preventDefault()
+            let hour24 = get24Hour()
+            hour24 = (hour24 + 1) % 24
+            const min = parseInt(minuteStr, 10) || 0
+            setFrom24(hour24, min)
+        } else if (e.key === "ArrowDown") {
+            e.preventDefault()
+            let hour24 = get24Hour()
+            hour24 = (hour24 - 1 + 24) % 24
+            const min = parseInt(minuteStr, 10) || 0
+            setFrom24(hour24, min)
+        }
+    }
+
+    const handleMinuteKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "ArrowUp") {
+            e.preventDefault()
+            let min = parseInt(minuteStr, 10) || 0
+            min += 1
+            let carry = 0
+            if (min > 59) {
+                min = 0
+                carry = 1
+            }
+            let hour24 = get24Hour() + carry
+            hour24 %= 24
+            setFrom24(hour24, min)
+        } else if (e.key === "ArrowDown") {
+            e.preventDefault()
+            let min = parseInt(minuteStr, 10) || 0
+            min -= 1
+            let carry = 0
+            if (min < 0) {
+                min = 59
+                carry = -1
+            }
+            let hour24 = get24Hour() + carry
+            if (hour24 < 0) hour24 += 24
+            setFrom24(hour24, min)
+        }
+    }
+
     return (
         <Card className="w-[283px] p-6 rounded-xl shadow-lg bg-white dark:bg-neutral-900 flex flex-col gap-4">
             <div className="flex items-center gap-4">
@@ -160,6 +229,7 @@ export function TimePicker({
                     onChange={handleHourChange}
                     onBlur={handleHourBlur}
                     onFocus={(e) => e.target.select()}
+                    onKeyDown={handleHourKeyDown}
                     inputMode="numeric"
                     pattern="[0-9]*"
                     className={cn(
@@ -178,6 +248,7 @@ export function TimePicker({
                     onChange={handleMinuteChange}
                     onBlur={handleMinuteBlur}
                     onFocus={(e) => e.target.select()}
+                    onKeyDown={handleMinuteKeyDown}
                     inputMode="numeric"
                     pattern="[0-9]*"
                     className={cn(

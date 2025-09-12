@@ -2,7 +2,6 @@
 
 import { LoginForm } from "@/components/LoginForm"
 import { useState } from 'react';
-import { createClient } from "@/utils/supabase/client";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,6 @@ export default function LoginPage() {
     const [isVerified, setIsVerified] = useState(false);
     const [key, setKey] = useState('');
     const [error, setError] = useState('');
-    const supabase = createClient();
 
     const handleKeyVerification = async () => {
         // This should ideally be done in a Server Action for security

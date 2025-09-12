@@ -22,7 +22,7 @@ export function LoginForm({
         await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
-                redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${location.origin}/dashboard`,
             },
         });
     };
@@ -31,7 +31,7 @@ export function LoginForm({
         await supabase.auth.signInWithOAuth({
             provider: 'discord',
             options: {
-                redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${location.origin}/dashboard`,
             },
         });
     };

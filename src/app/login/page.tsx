@@ -1,30 +1,34 @@
-"use client"
+"use client";
 
-import { LoginForm } from "@/components/LoginForm"
-import { useState } from 'react';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
+import { LoginForm } from "@/components/LoginForm";
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
     const [isVerified, setIsVerified] = useState(false);
-    const [key, setKey] = useState('');
-    const [error, setError] = useState('');
+    const [key, setKey] = useState("");
+    const [error, setError] = useState("");
 
-    const handleKeyVerification = async () => {
-        // This should ideally be done in a Server Action for security
-        // For simplicity in this tutorial, we'll call an API route.
-        const response = await fetch('/api/verifyKey', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key }),
-        });
+    // @ts-expect-error because "e" is implicitly any
+    const handleKeyVerification = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        try {
+            const response = await fetch("/api/verifyKey", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key }),
+            });
 
-        if (response.ok) {
-            setIsVerified(true);
-            setError('');
-        } else {
-            setError('Invalid teacher key.');
+            if (response.ok) {
+                setIsVerified(true);
+                setError("");
+            } else {
+                setError("Invalid teacher key.");
+            }
+        } catch (err) {
+            setError("An error occurred. Please try again.");
         }
     };
 
@@ -40,7 +44,7 @@ export default function LoginPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form>
+                            <form onSubmit={handleKeyVerification}>
                                 <div className="grid gap-6">
                                     <div className="flex flex-col gap-4">
                                         <Input
@@ -52,17 +56,18 @@ export default function LoginPage() {
                                             onChange={(e) => setKey(e.target.value)}
                                         />
                                     </div>
-                                    <Button className="w-full" onClick={handleKeyVerification}>
+                                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                                    <Button type="submit" className="w-full">
                                         Verify
                                     </Button>
                                 </div>
                             </form>
                         </CardContent>
                     </Card>
-                    ) : (
+                ) : (
                     <LoginForm />
                 )}
             </div>
         </div>
-    )
+    );
 }

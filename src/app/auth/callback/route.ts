@@ -1,6 +1,6 @@
 // app/auth/callback/route.ts
 import { NextResponse } from "next/server";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 
 export async function GET(req: Request) {
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     }
 
     if (code) {
-        const supabase = createRouteHandlerClient({ cookies, headers });
+        const supabase = createRouteHandlerClient({ cookies });
         // exchange the OAuth code for a session cookie
         await supabase.auth.exchangeCodeForSession(code);
     }

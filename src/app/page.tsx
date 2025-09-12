@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { TimePicker, TimeValue } from '@/components/TimePicker' // Adjust the import path as needed
+import { TimePicker, TimeValue } from '@/components/time-picker' // Adjust the import path as needed
 
 export default function Home() {
     const [time, setTime] = React.useState<TimeValue | undefined>()

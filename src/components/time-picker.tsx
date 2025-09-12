@@ -298,25 +298,25 @@ export function TimePicker({
             </div>
 
             {/* Footer */}
-            {/*<div className="flex items-end justify-between">*/}
-            {/*    <div className="text-[#3094FF]"></div>*/}
-            {/*    <div className="flex gap-2">*/}
-            {/*        <Button*/}
-            {/*            variant="outline"*/}
-            {/*            className="text-[#3094FF] hover:bg-blue-50 dark:hover:bg-neutral-800"*/}
-            {/*            onClick={onCancel}*/}
-            {/*        >*/}
-            {/*            Cancel*/}
-            {/*        </Button>*/}
-            {/*        <Button*/}
-            {/*            variant="ghost"*/}
-            {/*            className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700"*/}
-            {/*            onClick={() => onConfirm?.(getCurrentValue())}*/}
-            {/*        >*/}
-            {/*            OK*/}
-            {/*        </Button>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <div className="flex items-end justify-between">
+                <div className="text-[#3094FF]"></div>
+                <div className="flex gap-2">
+                    <Button
+                        variant="outline"
+                        className="text-[#3094FF] hover:bg-blue-50 dark:hover:bg-neutral-800"
+                        onClick={onCancel}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                        onClick={() => onConfirm?.(getCurrentValue())}
+                    >
+                        OK
+                    </Button>
+                </div>
+            </div>
         </Card>
     )
 }

@@ -4,6 +4,7 @@ import "./globals.css";
 import Head from "next/head";
 import {ThemeProvider} from "@/components/theme-provider"
 import {ModeToggle} from "@/components/mode-toggle";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans", subsets: ["latin"],

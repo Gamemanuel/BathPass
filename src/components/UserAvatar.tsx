@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
-export default function UserAvatar({ user }: { user: any }) {
+// @ts-expect-error because it does not like user being any
+export default function UserAvatar({ user }: { user }) {
     const avatar = user?.user_metadata?.avatar_url;
     const initials = user?.user_metadata?.full_name
         ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('')

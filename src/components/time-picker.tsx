@@ -46,7 +46,7 @@ export function TimePicker({
     const minuteRef = React.useRef<HTMLInputElement>(null)
 
     const getCurrentValue = (): TimeValue => {
-        let hNum = parseInt(hourStr, 10) || 0
+        const hNum = parseInt(hourStr, 10) || 0
         let currPeriod = period
         let displayH: number
 
@@ -89,7 +89,7 @@ export function TimePicker({
     }
 
     const get24Hour = () => {
-        let hNum = parseInt(hourStr, 10) || 0
+        const hNum = parseInt(hourStr, 10) || 0
         if (hNum > 12 && hNum <= 23) {
             return hNum
         } else if (hNum === 0 || hNum === 24) {
@@ -114,7 +114,7 @@ export function TimePicker({
     }
 
     const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let input = e.target.value.replace(/\D/g, "").slice(0, 4)
+        const input = e.target.value.replace(/\D/g, "").slice(0, 4)
 
         if (input.length <= 2) {
             setHourStr(input)
@@ -144,7 +144,7 @@ export function TimePicker({
     }
 
     const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let input = e.target.value.replace(/\D/g, "").slice(0, 2)
+        const input = e.target.value.replace(/\D/g, "").slice(0, 2)
         setMinuteStr(input)
         handleChange()
     }

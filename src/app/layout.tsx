@@ -1,10 +1,7 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import Head from "next/head";
 import {ThemeProvider} from "@/components/theme-provider"
-import {ModeToggle} from "@/components/mode-toggle";
-import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans", subsets: ["latin"],
@@ -26,13 +23,6 @@ export default function RootLayout({
     return (
         <>
             <html lang="en" suppressHydrationWarning>
-            <Head>
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=open_in_new"
-                    rel="stylesheet"
-                />
-            </Head>
-
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
             <ThemeProvider
                 attribute="class"

@@ -41,8 +41,8 @@ export default function DashboardPage() {
 
             if (data) setPasses(data);
         };
-        fetchData();
-    }, []);
+        fetchData().then();
+    }, [supabase]);
 
     const toggleSelect = (id: number) => {
         setSelected(prev =>
@@ -97,15 +97,15 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             {/* Navbar */}
-            <div className="flex justify-between items-center p-4 border-b">
-                <ModeToggle />
+            <div className="flex justify-end items-end p-4 border-b">
+                <ModeToggle/>
                 {user && (
                     <Image
                         src={user.user_metadata?.avatar_url || "/default-avatar.png"}
                         alt="User avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-full"
+                        width={50}
+                        height={50}
+                        className="rounded-full pl-3"
                     />
                 )}
             </div>

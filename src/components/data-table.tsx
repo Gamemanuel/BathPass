@@ -1,10 +1,6 @@
 "use client"
 
 import * as React from "react"
-import {
-    type UniqueIdentifier,
-} from "@dnd-kit/core"
-
 
 import {
     ChevronLeftIcon,
@@ -24,7 +20,6 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    Row,
     SortingState,
     useReactTable,
     VisibilityState,
@@ -192,40 +187,6 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         ),
     },
     {
-        accessorKey: "reviewer",
-        header: "Reviewer",
-        cell: ({ row }) => {
-            const isAssigned = row.original.reviewer !== "Assign reviewer"
-
-            if (isAssigned) {
-                return row.original.reviewer
-            }
-
-            return (
-                <>
-                    <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-                        Reviewer
-                    </Label>
-                    <Select>
-                        <SelectTrigger
-                            className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-                            size="sm"
-                            id={`${row.original.id}-reviewer`}
-                        >
-                            <SelectValue placeholder="Assign reviewer" />
-                        </SelectTrigger>
-                        <SelectContent align="end">
-                            <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-                            <SelectItem value="Jamik Tashpulatov">
-                                Jamik Tashpulatov
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </>
-            )
-        },
-    },
-    {
         id: "actions",
         cell: () => (
             <DropdownMenu>
@@ -317,23 +278,19 @@ export function DataTable({
                         <SelectItem value="focus-documents">Focus Documents</SelectItem>
                     </SelectContent>
                 </Select>
+                {/* the group of tab triggers */}
                 <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
                     <TabsTrigger value="outline">Outline</TabsTrigger>
                     <TabsTrigger value="past-performance">
-                        Past Performance <Badge variant="secondary">3</Badge>
+                        Past Performance
                     </TabsTrigger>
                     <TabsTrigger value="key-personnel">
-                        Key Personnel <Badge variant="secondary">2</Badge>
+                        Key Personnel
                     </TabsTrigger>
-                    <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+                    <TabsTrigger value="focus-documents">
+                        Focus Documents
+                    </TabsTrigger>
                 </TabsList>
-                <div className="flex items-center gap-2">
-                    {/* TODO:// add a search bar here */}
-                    <Button variant="outline" size="sm">
-                        {/* TODO:// make this have the Export CSV*/}
-                        <span className="hidden lg:inline">Add Section</span>
-                    </Button>
-                </div>
             </div>
             <TabsContent
                 value="outline"

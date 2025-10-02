@@ -256,7 +256,6 @@ export function DataTable({
                           }: {
     data: z.infer<typeof schema>[]
 }) {
-    // const [data, setData] = React.useState(() => initialData) // REMOVED
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
@@ -270,7 +269,7 @@ export function DataTable({
     })
 
     const table = useReactTable({
-        data: initialData, // UPDATED: Using initialData directly
+        data: initialData,
         columns,
         state: {
             sorting,

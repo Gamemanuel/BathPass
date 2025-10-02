@@ -1,12 +1,6 @@
 "use client"
 
 import {
-  IconDotsVertical,
-  IconLogout,
-  IconUserCircle,
-} from "@tabler/icons-react"
-
-import {
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -16,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -25,7 +18,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
+// the Monitor X import will be used later fyi
+import {
+    MonitorX,
+    MonitorCheck,
+    EllipsisVerticalIcon,
+    LogOutIcon
+} from "lucide-react"
 export function NavUser({
   user,
 }: {
@@ -54,7 +53,7 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              <EllipsisVerticalIcon className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -65,13 +64,15 @@ export function NavUser({
           >
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <IconUserCircle />
-                Account
+                  {/* Monitor x is when tv Mode is enabled and monitor check is when you have it disabled*/}
+                  {/* TODO:// make the text dynamic based on what the current state is */}
+                  <MonitorCheck /> {/* <MonitorX />  */}
+                Tv Mode
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <IconLogout />
+              <LogOutIcon className="h-8 w-8 rounded-full" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -11,10 +11,7 @@ import {createClient} from "@/lib/supabase/client";
 import Image from "next/image";
 import React from "react";
 
-export function LoginForm({
-                              className,
-                              ...props
-                          }: React.ComponentProps<"div">) {
+export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
     const supabase = createClient();
 
     const handleGitHubLogin = async () => {
@@ -34,7 +31,6 @@ export function LoginForm({
             },
         });
     };
-
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>

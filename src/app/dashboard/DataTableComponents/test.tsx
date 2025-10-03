@@ -24,7 +24,7 @@ import {
     Row,
     SortingState,
     useReactTable,
-    VisibilityState,
+    VisibilityState, FilterFn,
 } from "@tanstack/react-table"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -57,6 +57,8 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {createClient} from "@/lib/supabase/client";
+import {toast} from "sonner";
 
 export const bathroomPassSchema = z.object({
     id: z.number(),
@@ -69,15 +71,81 @@ export const bathroomPassSchema = z.object({
 
 type BathroomPass = z.infer<typeof bathroomPassSchema>
 
+// 3. ADDED: Custom filter function for time search
+const timeGreaterThanFilter: FilterFn<BathroomPass> = (row, columnId, filterValue) => {
+    const rowTime = row.getValue(columnId) as string | null
+    if (!rowTime || typeof filterValue !== 'string' || !filterValue.startsWith('>')) {
+        return true // Don't filter if data is invalid or not a time query
+    }
+
+    try {
+        const query = filterValue.substring(1).trim().toLowerCase()
+        let querySeconds = 0
+
+        // Parse query like "5m", "10:30"
+        if (query.endsWith('m')) {
+            querySeconds = parseInt(query.slice(0, -1), 10) * 60
+        } else if (query.includes(':')) {
+            const parts = query.split(':').map(Number)
+            querySeconds = (parts[0] || 0) * 60 + (parts[1] || 0)
+        } else {
+            querySeconds = parseInt(query, 10) * 60 // Assume minutes if no unit
+        }
+
+        if (isNaN(querySeconds)) return true
+
+        // Parse row time "HH:MI:SS"
+        const timeParts = rowTime.split(':').map(Number)
+        const rowSeconds = (timeParts[0] || 0) * 3600 + (timeParts[1] || 0) * 60 + (timeParts[2] || 0)
+
+        return rowSeconds > querySeconds
+    } catch (e) {
+        return true // Don't filter on parsing error
+    }
+}
+
+// 4. ADDED: Reusable Editable Cell Component
+const EditableCell = ({
+                          getValue,
+                          row,
+                          column,
+                          table,
+                      }: {
+    getValue: () => any
+    row: Row<BathroomPass>
+    column: { id: string }
+    table: any
+}) => {
+    const initialValue = getValue()
+    const [value, setValue] = React.useState(initialValue)
+
+    const onBlur = () => {
+        if (value !== initialValue) {
+            table.options.meta?.updateData(row.original.id, column.id, value)
+        }
+    }
+
+    React.useEffect(() => {
+        setValue(initialValue)
+    }, [initialValue])
+
+    return (
+        <Input
+            value={value as string}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={onBlur}
+            className="h-8 border-transparent bg-transparent p-1 shadow-none transition-colors hover:border-border focus-visible:border-ring focus-visible:bg-background"
+        />
+    )
+}
+
+// 5. MODIFIED: Column definitions
 export const columns: ColumnDef<BathroomPass>[] = [
     {
         id: "select",
         header: ({ table }) => (
             <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
+                checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
@@ -91,14 +159,17 @@ export const columns: ColumnDef<BathroomPass>[] = [
         ),
         enableSorting: false,
         enableHiding: false,
+        size: 40, // 6. ADDED: Reduces column width
     },
     {
         accessorKey: "name",
         header: "Name",
+        cell: EditableCell, // Use the editable cell
     },
     {
         accessorKey: "destination",
         header: "Destination",
+        cell: EditableCell, // Use the editable cell
     },
     {
         accessorKey: "time_out",
@@ -116,45 +187,87 @@ export const columns: ColumnDef<BathroomPass>[] = [
     {
         accessorKey: "total_time_spent",
         header: "Total Time",
+        filterFn: timeGreaterThanFilter, // 7. ADDED: Attach custom filter
         cell: ({ row }) => row.original.total_time_spent || "...",
     },
 ]
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
-    const [data] = React.useState(initialData)
+    const [data, setData] = React.useState(initialData)
     const [rowSelection, setRowSelection] = React.useState({})
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
     const [sorting, setSorting] = React.useState<SortingState>([])
-    const [pagination, setPagination] = React.useState({
-        pageIndex: 0,
-        pageSize: 10,
-    })
-    // Search State
     const [globalFilter, setGlobalFilter] = React.useState<string>("")
     const [activeTab, setActiveTab] = React.useState("outline") // 8. ADDED: State for active tab
+
+    const supabase = createClient()
+
+    // 9. ADDED: Supabase real-time subscription
+    React.useEffect(() => {
+        // Function to re-fetch data to get updated calculated columns
+        const refetchData = async () => {
+            const { data: newData, error } = await supabase
+                .from("bathroom_passes_with_duration")
+                .select("*")
+                .order("time_out", { ascending: false })
+            if (!error && newData) {
+                setData(newData)
+            }
+        }
+
+        const channel = supabase
+            .channel('table-db-changes')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'bathroom_passes' },
+                (payload) => {
+                    console.log('Change received!', payload)
+                    refetchData() // Refetch on any change
+                }
+            )
+            .subscribe()
+
+        // Cleanup subscription on component unmount
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [supabase])
 
     const table = useReactTable({
         data,
         columns,
         state: {
             sorting,
-            columnVisibility,
             rowSelection,
-            columnFilters,
-            pagination,
             globalFilter,
         },
-        getRowId: (row) => row.id.toString(),
-        enableRowSelection: true,
+        // 10. ADDED: Custom global filter logic
+        globalFilterFn: (row, columnId, filterValue) => {
+            if (typeof filterValue === 'string' && filterValue.startsWith('>')) {
+                // If it's a time query, only let the specific column filter handle it
+                return true
+            }
+            // Otherwise, perform a standard text search
+            const value = row.getValue(columnId) as string | number
+            return String(value).toLowerCase().includes(filterValue.toLowerCase())
+        },
+        // 11. ADDED: Pass update function to cells via table.meta
+        meta: {
+            updateData: async (id: number, columnId: string, value: string) => {
+                const { error } = await supabase
+                    .from('bathroom_passes')
+                    .update({ [columnId]: value })
+                    .eq('id', id)
+
+                if (error) {
+                    toast.error(`Failed to update ${columnId}.`)
+                } else {
+                    toast.success("Entry updated.")
+                }
+            },
+        },
+        // ... other table options remain the same
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        onColumnVisibilityChange: setColumnVisibility,
-        onPaginationChange: setPagination,
         onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -164,7 +277,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    // .CSV Export Handler
+    // ... (handleExport function remains the same as before) ...
     const handleExport = (rows: Row<BathroomPass>[], fileName: string) => {
         const dataToExport = rows.map((row) => row.original)
         const csv = Papa.unparse(dataToExport)
@@ -191,12 +304,13 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                     <TabsTrigger value="active">Active Passes</TabsTrigger>
                 </TabsList>
 
+                {/* 12. MODIFIED: Conditionally render search and export */}
                 {activeTab === 'outline' && (
                     <div className="flex items-center gap-2">
                         <div className="relative">
                             <SearchIcon className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
                             <Input
-                                placeholder="Search For a name"
+                                placeholder="Search or type >5m"
                                 value={globalFilter ?? ""}
                                 onChange={(event) => setGlobalFilter(event.target.value)}
                                 className="h-9 w-40 pl-9 lg:w-64"
@@ -231,7 +345,6 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                         </DropdownMenu>
                     </div>
                 )}
-
             </div>
             <TabsContent
                 value="outline"
@@ -265,7 +378,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                                         data-state={row.getIsSelected() && "selected"}
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
+                                            <TableCell key={cell.id} style={{ width: cell.column.getSize() }}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>
                                         ))}
@@ -284,7 +397,6 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                         </TableBody>
                     </Table>
                 </div>
-
                 {/* Pagination Controls */}
                 <div className="flex items-center justify-between px-2">
                     <div className="text-muted-foreground flex-1 text-sm">
@@ -357,14 +469,8 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                     </div>
                 </div>
             </TabsContent>
-            {/* Placeholder tab content */}
-            <TabsContent
-                value="active"
-                className="flex flex-col px-4 lg:px-6"
-            >
-                <div className="flex-1 aspect-video w-full rounded-lg border border-dashed">
-                    {/* Active Passes UI */}
-                </div>
+            <TabsContent value="active" className="flex flex-col px-4 lg:px-6">
+                <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
             </TabsContent>
         </Tabs>
     )

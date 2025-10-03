@@ -196,7 +196,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                         <div className="relative">
                             <SearchIcon className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
                             <Input
-                                placeholder="Search For a name"
+                                placeholder="Search or type >5m"
                                 value={globalFilter ?? ""}
                                 onChange={(event) => setGlobalFilter(event.target.value)}
                                 className="h-9 w-40 pl-9 lg:w-64"

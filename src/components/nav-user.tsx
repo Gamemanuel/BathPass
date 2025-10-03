@@ -1,83 +1,106 @@
-"use client"
+"use client"; // This file is now exclusively for client-side logic
 
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-// the Monitor X import will be used later fyi
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import {
     MonitorX,
     MonitorCheck,
     EllipsisVerticalIcon,
-    LogOutIcon
-} from "lucide-react"
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    LogOutIcon,
+} from "lucide-react";
+import { createClient } from "@/lib/supabase/client"; // Use the browser client for logout
+import { useTransition } from "react";
+import { toggleTvMode } from "@/app/actions"; // Server action for the toggle
+
+// This component now receives its data via props
+export function NavUserClient({
+                                  user,
+                                  tvModeEnabled,
+                              }: {
+    user: { name: string; email: string; avatar: string };
+    tvModeEnabled: boolean;
 }) {
-  return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
+    const [isPending, startTransition] = useTransition();
+
+    const handleToggle = () => {
+        startTransition(() => {
+            toggleTvMode();
+        });
+    };
+
+    const handleLogout = async () => {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+        // In the App Router, it's better to use the router for navigation
+        window.location.href = '/login';
+    };
+
+    return (
+        <SidebarMenu>
+            <SidebarMenuItem>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <SidebarMenuButton
+                            size="lg"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                        >
+                            <Avatar className="h-8 w-8 rounded-lg grayscale">
+                                <AvatarImage src={user.avatar} alt={user.name} />
+                                <AvatarFallback className="rounded-lg">
+                                    {user.name?.charAt(0).toUpperCase() || "U"}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-medium">{user.name}</span>
+                                <span className="text-muted-foreground truncate text-xs">
                   {user.email}
                 </span>
-              </div>
-              <EllipsisVerticalIcon className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side="bottom"
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                  {/* Monitor x is when tv Mode is enabled and monitor check is when you have it disabled*/}
-                  {/* TODO:// make the text dynamic based on what the current state is */}
-                  <MonitorCheck /> {/* <MonitorX />  */}
-                Tv Mode
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOutIcon className="h-8 w-8 rounded-full" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  )
+                            </div>
+                            <EllipsisVerticalIcon className="ml-auto size-4" />
+                        </SidebarMenuButton>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                        side="bottom"
+                        align="end"
+                        sideOffset={4}
+                    >
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem onClick={handleToggle} disabled={isPending}>
+                                {tvModeEnabled ? (
+                                    <MonitorX className="mr-2 size-4" />
+                                ) : (
+                                    <MonitorCheck className="mr-2 size-4" />
+                                )}
+                                <span>
+                  {tvModeEnabled ? "Disable TV Mode" : "Enable TV Mode"}
+                </span>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleLogout}>
+                            <LogOutIcon className="mr-2 size-4" />
+                            <span>Log out</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </SidebarMenuItem>
+        </SidebarMenu>
+    );
 }

@@ -1,15 +1,25 @@
+// page.tsx
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
-import {
-    SidebarInset,
-    SidebarProvider,
-} from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { createClient } from "@/lib/supabase/server"
-import React from "react";
+import { redirect } from "next/navigation" // Import redirect
+import React from "react"
 
 export default async function Page() {
-    // Fetch data from the Supabase view on the server
     const supabase = await createClient()
+
+    // Check for an authenticated user
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    // If no user, redirect to a login page (assuming you have one at /login)
+    if (!user) {
+        redirect("/login")
+    }
+
+    // Fetch data from the Supabase view on the server
     const { data, error } = await supabase
         .from("bathroom_passes_with_duration")
         .select("*")

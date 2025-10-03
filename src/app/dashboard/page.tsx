@@ -3,7 +3,7 @@ import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation" // Import redirect
+import { redirect } from "next/navigation"
 import React from "react"
 
 export default async function Page() {
@@ -37,7 +37,7 @@ export default async function Page() {
         <SidebarProvider
             style={
                 {
-                    "--header-height": "calc(var(--spacing) * 40)",
+                    "--header-height": "calc(var(--spacing) * 16)",
                 } as React.CSSProperties
             }
         >

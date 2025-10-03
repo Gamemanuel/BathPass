@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 export function useSession() {
+    // ignore the "any" error here
     const [session, setSession] = useState<any>(null);
 
     useEffect(() => {

@@ -3,10 +3,7 @@
 import * as React from 'react'
 import { Input } from '@/components/ui/input'
 
-export default function TimePicker({
-                                       value,
-                                       onChange,
-                                   }: {
+export default function TimePicker({value, onChange,}: {
     value: string | null
     onChange: (nextIso: string | null) => void
 }) {

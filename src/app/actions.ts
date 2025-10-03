@@ -1,4 +1,3 @@
-// app/actions.ts
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
@@ -7,6 +6,7 @@ import { cookies } from "next/headers"
 
 export async function toggleTvMode() {
     const cookieStore = cookies()
+    // @ts-expect-error because cookie store has not been created yet
     const supabase = await createClient(cookieStore)
 
     // Get the current user
@@ -45,6 +45,5 @@ export async function toggleTvMode() {
         return
     }
 
-    // Revalidate the page to reflect the change instantly
-    revalidatePath("/")
+    revalidatePath("/dashboard")
 }

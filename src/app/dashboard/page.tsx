@@ -14,7 +14,7 @@ export default async function Page() {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // If no user, redirect to a login page (assuming you have one at /login)
+    // If no user, redirect to a login page
     if (!user) {
         redirect("/login")
     }
@@ -37,8 +37,7 @@ export default async function Page() {
         <SidebarProvider
             style={
                 {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 16)",
+                    "--header-height": "calc(var(--spacing) * 40)",
                 } as React.CSSProperties
             }
         >

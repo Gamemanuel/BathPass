@@ -1,5 +1,3 @@
-// src/components/data-table.tsx
-
 "use client"
 
 import * as React from "react"
@@ -9,7 +7,6 @@ import {
     ChevronsLeftIcon,
     ChevronsRightIcon,
 } from "lucide-react"
-
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -27,7 +24,6 @@ import {
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
 import {
     Select,
     SelectContent,
@@ -44,19 +40,18 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-// 1. Define the schema to match the Supabase view
 export const bathroomPassSchema = z.object({
     id: z.number(),
     name: z.string(),
     destination: z.string().nullable(),
-    time_out: z.string(), // TIMESTAMPTZ comes as a string
+    time_out: z.string(),
     time_in: z.string().nullable(),
     total_time_spent: z.string().nullable(),
 })
 
 type BathroomPass = z.infer<typeof bathroomPassSchema>
 
-// 2. Define the columns for the data table
+// Columns for the data table
 export const columns: ColumnDef<BathroomPass>[] = [
     {
         id: "select",
@@ -108,7 +103,6 @@ export const columns: ColumnDef<BathroomPass>[] = [
     },
 ]
 
-// 3. Update the DataTable component
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [data, setData] = React.useState(initialData)
     const [rowSelection, setRowSelection] = React.useState({})

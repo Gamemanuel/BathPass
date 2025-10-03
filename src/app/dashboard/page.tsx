@@ -1,24 +1,22 @@
-// src/app/page.tsx
-
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
 import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar"
-import { createClient } from "@/lib/supabase/server" // Make sure you have a Supabase client utility
+import { createClient } from "@/lib/supabase/server"
 
 export default async function Page() {
     // Fetch data from the Supabase view on the server
     const supabase = await createClient()
     const { data, error } = await supabase
-        .from("bathroom_passes_with_duration") // Query the view
+        .from("bathroom_passes_with_duration")
         .select("*")
-        .order("time_out", { ascending: false }) // Show most recent first
+        .order("time_out", { ascending: false })
 
     if (error) {
         console.error("Error fetching data:", error)
-        // You can render an error state here
+        // We can Add a error state here
     }
 
     // Pass the fetched data as the initialData prop

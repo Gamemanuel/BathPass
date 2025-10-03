@@ -5,6 +5,7 @@ import {
     SidebarProvider,
 } from "@/components/ui/sidebar"
 import { createClient } from "@/lib/supabase/server"
+import React from "react";
 
 export default async function Page() {
     // Fetch data from the Supabase view on the server
@@ -16,7 +17,7 @@ export default async function Page() {
 
     if (error) {
         console.error("Error fetching data:", error)
-        // We can Add a error state here
+        // We can Add an error state here
     }
 
     // Pass the fetched data as the initialData prop

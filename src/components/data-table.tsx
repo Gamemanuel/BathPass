@@ -104,7 +104,7 @@ export const columns: ColumnDef<BathroomPass>[] = [
 ]
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
-    const [data, setData] = React.useState(initialData)
+    const [data] = React.useState(initialData)
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})

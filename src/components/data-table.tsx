@@ -1,22 +1,27 @@
 "use client"
 
 import * as React from "react"
+import Papa from "papaparse"
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
     ChevronsLeftIcon,
     ChevronsRightIcon,
+    DownloadIcon,
+    SearchIcon,
 } from "lucide-react"
+
 import {
     ColumnDef,
     ColumnFiltersState,
+    getFilteredRowModel,
     flexRender,
     getCoreRowModel,
     getFacetedRowModel,
     getFacetedUniqueValues,
-    getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    Row,
     SortingState,
     useReactTable,
     VisibilityState,
@@ -24,6 +29,13 @@ import {
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
     Select,
     SelectContent,
@@ -39,6 +51,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
 
 export const bathroomPassSchema = z.object({
     id: z.number(),
@@ -51,7 +69,6 @@ export const bathroomPassSchema = z.object({
 
 type BathroomPass = z.infer<typeof bathroomPassSchema>
 
-// Columns for the data table
 export const columns: ColumnDef<BathroomPass>[] = [
     {
         id: "select",
@@ -116,9 +133,8 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
         pageIndex: 0,
         pageSize: 10,
     })
-
-    // TODO: Add Supabase real-time subscription here with a useEffect
-    // to automatically update the table when data changes.
+    // Search State
+    const [globalFilter, setGlobalFilter] = React.useState<string>("")
 
     const table = useReactTable({
         data,
@@ -129,6 +145,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
             rowSelection,
             columnFilters,
             pagination,
+            globalFilter,
         },
         getRowId: (row) => row.id.toString(),
         enableRowSelection: true,
@@ -137,6 +154,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,
+        onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -145,128 +163,206 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    return (
-        <div className="flex w-full flex-col justify-start gap-4">
-            {/* Header/Controls can go here */}
-            <div className="overflow-hidden rounded-lg border">
-                <Table>
-                    <TableHeader className="bg-muted sticky top-0">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id} colSpan={header.colSpan}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+    // .CSV Export Handler
+    const handleExport = (rows: Row<BathroomPass>[], fileName: string) => {
+        const dataToExport = rows.map((row) => row.original)
+        const csv = Papa.unparse(dataToExport)
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+        const link = document.createElement("a")
+        const url = URL.createObjectURL(blob)
+        link.setAttribute("href", url)
+        link.setAttribute("download", `${fileName}.csv`)
+        link.style.visibility = "hidden"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
 
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between px-2">
-                <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
-                <div className="flex items-center space-x-6 lg:space-x-8">
-                    <div className="flex items-center space-x-2">
-                        <p className="text-sm font-medium">Rows per page</p>
-                        <Select
-                            value={`${table.getState().pagination.pageSize}`}
-                            onValueChange={(value) => {
-                                table.setPageSize(Number(value))
-                            }}
-                        >
-                            <SelectTrigger className="h-8 w-[70px]">
-                                <SelectValue placeholder={table.getState().pagination.pageSize} />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                                {[10, 20, 30, 40, 50].map((pageSize) => (
-                                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                                        {pageSize}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+    return (
+        <Tabs
+            defaultValue="outline"
+            className="flex w-full flex-col justify-start gap-6"
+        >
+            <div className="flex items-center justify-between px-4 lg:px-6">
+                <TabsList>
+                    <TabsTrigger value="outline">History</TabsTrigger>
+                    <TabsTrigger value="active">Active Passes</TabsTrigger>
+                </TabsList>
+
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <SearchIcon className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
+                        <Input
+                            placeholder="Search..."
+                            value={globalFilter ?? ""}
+                            onChange={(event) => setGlobalFilter(event.target.value)}
+                            className="h-9 w-40 pl-9 lg:w-64"
+                        />
                     </div>
-                    <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                        Page {table.getState().pagination.pageIndex + 1} of{" "}
-                        {table.getPageCount()}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Button
-                            variant="outline"
-                            className="hidden h-8 w-8 p-0 lg:flex"
-                            onClick={() => table.setPageIndex(0)}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <span className="sr-only">Go to first page</span>
-                            <ChevronsLeftIcon className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="h-8 w-8 p-0"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <span className="sr-only">Go to previous page</span>
-                            <ChevronLeftIcon className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="h-8 w-8 p-0"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <span className="sr-only">Go to next page</span>
-                            <ChevronRightIcon className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="hidden h-8 w-8 p-0 lg:flex"
-                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <span className="sr-only">Go to last page</span>
-                            <ChevronsRightIcon className="h-4 w-4" />
-                        </Button>
-                    </div>
+
+                    {/* Export Dropdown Button */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-2">
+                                <DownloadIcon className="h-4 w-4" />
+                                <span className="hidden lg:inline">Export</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                onClick={() => handleExport(table.getPrePaginationRowModel().rows, "all_passes")}
+                            >
+                                Export All
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                disabled={table.getRowModel().rows.length === table.getPrePaginationRowModel().rows.length}
+                                onClick={() => handleExport(table.getRowModel().rows, "filtered_passes")}
+                            >
+                                Export Filtered
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+                                onClick={() => handleExport(table.getFilteredSelectedRowModel().rows, "selected_passes")}
+                            >
+                                Export Selected
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
-        </div>
+            <TabsContent
+                value="outline"
+                className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
+            >
+                <div className="overflow-hidden rounded-lg border">
+                    <Table>
+                        <TableHeader className="bg-muted sticky top-0">
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between px-2">
+                    <div className="text-muted-foreground flex-1 text-sm">
+                        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                        {table.getFilteredRowModel().rows.length} row(s) selected.
+                    </div>
+                    <div className="flex items-center space-x-6 lg:space-x-8">
+                        <div className="flex items-center space-x-2">
+                            <p className="text-sm font-medium">Rows per page</p>
+                            <Select
+                                value={`${table.getState().pagination.pageSize}`}
+                                onValueChange={(value) => {
+                                    table.setPageSize(Number(value))
+                                }}
+                            >
+                                <SelectTrigger className="h-8 w-[70px]">
+                                    <SelectValue placeholder={table.getState().pagination.pageSize} />
+                                </SelectTrigger>
+                                <SelectContent side="top">
+                                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                                        <SelectItem key={pageSize} value={`${pageSize}`}>
+                                            {pageSize}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                            Page {table.getState().pagination.pageIndex + 1} of{" "}
+                            {table.getPageCount()}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Button
+                                variant="outline"
+                                className="hidden h-8 w-8 p-0 lg:flex"
+                                onClick={() => table.setPageIndex(0)}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <span className="sr-only">Go to first page</span>
+                                <ChevronsLeftIcon className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0"
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <span className="sr-only">Go to previous page</span>
+                                <ChevronLeftIcon className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0"
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <span className="sr-only">Go to next page</span>
+                                <ChevronRightIcon className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="hidden h-8 w-8 p-0 lg:flex"
+                                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <span className="sr-only">Go to last page</span>
+                                <ChevronsRightIcon className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </TabsContent>
+            {/* Placeholder tab content */}
+            <TabsContent
+                value="active"
+                className="flex flex-col px-4 lg:px-6"
+            >
+                <div className="flex-1 aspect-video w-full rounded-lg border border-dashed">
+                    {/* Active Passes UI */}
+                </div>
+            </TabsContent>
+        </Tabs>
     )
 }

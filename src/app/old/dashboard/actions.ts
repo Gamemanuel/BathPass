@@ -2,10 +2,10 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function handleSignOut() {
-    const supabase = await createServerSupabaseClient()
+    const supabase = await createClient()
     await supabase.auth.signOut()
 
     // ✅ Now it's safe to modify cookies

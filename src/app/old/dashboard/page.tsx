@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { DataTable } from './data-table'
 import { Pass } from './columns'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { ExternalLink } from 'lucide-react'
 import { handleSignOut } from './actions'
 
 export default async function DashboardPage() {
-    const supabase = await createServerSupabaseClient()
+    const supabase = await createClient()
 
     const {
         data: { session },

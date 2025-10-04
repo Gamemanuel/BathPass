@@ -57,19 +57,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import {columns} from "@/app/dashboard/components/columns";
-
-export const bathroomPassSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    destination: z.string().nullable(),
-    time_out: z.string(),
-    time_in: z.string().nullable(),
-    total_time_spent: z.string().nullable(),
-})
-
-type BathroomPass = z.infer<typeof bathroomPassSchema>
-
-
+import {BathroomPass} from "@/app/dashboard/components/table-schema";
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [data] = React.useState(initialData)

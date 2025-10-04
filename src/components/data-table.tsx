@@ -56,6 +56,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {columns} from "@/app/dashboard/components/columns";
 
 export const bathroomPassSchema = z.object({
     id: z.number(),
@@ -68,61 +69,7 @@ export const bathroomPassSchema = z.object({
 
 type BathroomPass = z.infer<typeof bathroomPassSchema>
 
-export const columns: ColumnDef<BathroomPass>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <div className="flex items-center justify-center">
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                />
-            </div>
-        ),
-        cell: ({ row }) => (
-            <div className="flex items-center justify-center">
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                />
-            </div>
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "name",
-        header: () => <div className="pl-0">Name</div>, // FIX: Remove left padding on the Name column header.
-        cell: ({ row }) => <div className="pl-0">{row.original.name}</div>, // FIX: Remove left padding on the Name column cell.
-    },
-    {
-        accessorKey: "destination",
-        header: "Destination",
-    },
-    {
-        accessorKey: "time_out",
-        header: "Time Out",
-        cell: ({ row }) => new Date(row.original.time_out).toLocaleTimeString(),
-    },
-    {
-        accessorKey: "time_in",
-        header: "Time In",
-        cell: ({ row }) =>
-            row.original.time_in
-                ? new Date(row.original.time_in).toLocaleTimeString()
-                : "Not returned",
-    },
-    {
-        accessorKey: "total_time_spent",
-        header: "Total Time",
-        cell: ({ row }) => row.original.total_time_spent || "...",
-    },
-]
+
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [data] = React.useState(initialData)
@@ -137,7 +84,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     })
     // Search State
     const [globalFilter, setGlobalFilter] = React.useState<string>("")
-    const [activeTab, setActiveTab] = React.useState("outline") // 8. ADDED: State for active tab
+    const [activeTab, setActiveTab] = React.useState("outline")
 
     const table = useReactTable({
         data,
@@ -193,6 +140,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                     <TabsTrigger value="active">Active Passes</TabsTrigger>
                 </TabsList>
 
+                {/* .CSV export commands */}
                 {activeTab === 'outline' && (
                     <div className="flex items-center gap-2">
                         <div className="relative">
@@ -235,12 +183,14 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                 )}
 
             </div>
+            {/* This is the data Table component*/}
             <TabsContent
                 value="outline"
                 className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
             >
                 <div className="overflow-hidden rounded-lg border">
                     <Table>
+                        {/* This is the header of the table */}
                         <TableHeader className="bg-muted sticky top-0 z-10">
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
@@ -259,6 +209,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                                 </TableRow>
                             ))}
                         </TableHeader>
+                        {/* This is the Body of the Table */}
                         <TableBody className="**:data-[slot=table-cell]:first:w-8">
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
@@ -359,6 +310,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                     </div>
                 </div>
             </TabsContent>
+
             {/* Placeholder tab content */}
             <TabsContent
                 value="active"

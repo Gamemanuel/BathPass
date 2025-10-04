@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Papa from "papaparse"
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
@@ -11,7 +10,6 @@ import {
     SearchIcon,
 } from "lucide-react"
 import {
-    ColumnDef,
     ColumnFiltersState,
     getFilteredRowModel,
     flexRender,
@@ -20,14 +18,11 @@ import {
     getFacetedUniqueValues,
     getPaginationRowModel,
     getSortedRowModel,
-    Row,
     SortingState,
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -58,6 +53,7 @@ import {
 } from "@/components/ui/tabs"
 import {columns} from "@/app/dashboard/components/columns";
 import {BathroomPass} from "@/app/dashboard/components/table-schema";
+import {handleExport} from "@/app/dashboard/components/handle-export";
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [data] = React.useState(initialData)
@@ -100,21 +96,6 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
-
-    // .CSV Export Handler
-    const handleExport = (rows: Row<BathroomPass>[], fileName: string) => {
-        const dataToExport = rows.map((row) => row.original)
-        const csv = Papa.unparse(dataToExport)
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-        const link = document.createElement("a")
-        const url = URL.createObjectURL(blob)
-        link.setAttribute("href", url)
-        link.setAttribute("download", `${fileName}.csv`)
-        link.style.visibility = "hidden"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-    }
 
     return (
         <Tabs

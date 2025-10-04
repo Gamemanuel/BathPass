@@ -72,21 +72,25 @@ export const columns: ColumnDef<BathroomPass>[] = [
     {
         id: "select",
         header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
+            <div className="pr-0">
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            </div>
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
+            <div className="p-0">
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            </div>
         ),
         enableSorting: false,
         enableHiding: false,
@@ -181,7 +185,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     return (
         <Tabs
             value={activeTab}
-            onValueChange={setActiveTab} // Update active tab state
+            onValueChange={setActiveTab}
             className="flex w-full flex-col justify-start gap-6"
         >
             <div className="flex items-center justify-between px-4 lg:px-6">

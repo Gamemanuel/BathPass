@@ -72,7 +72,7 @@ export const columns: ColumnDef<BathroomPass>[] = [
     {
         id: "select",
         header: ({ table }) => (
-            <div className="pr-0">
+            <div className="flex items-center justify-center">
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||
@@ -84,7 +84,7 @@ export const columns: ColumnDef<BathroomPass>[] = [
             </div>
         ),
         cell: ({ row }) => (
-            <div className="p-0">
+            <div className="flex items-center justify-center">
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -97,7 +97,8 @@ export const columns: ColumnDef<BathroomPass>[] = [
     },
     {
         accessorKey: "name",
-        header: "Name",
+        header: () => <div className="pl-0">Name</div>, // FIX: Remove left padding on the Name column header.
+        cell: ({ row }) => <div className="pl-0">{row.original.name}</div>, // FIX: Remove left padding on the Name column cell.
     },
     {
         accessorKey: "destination",
@@ -128,9 +129,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
@@ -242,7 +241,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
             >
                 <div className="overflow-hidden rounded-lg border">
                     <Table>
-                        <TableHeader className="bg-muted sticky top-0">
+                        <TableHeader className="bg-muted sticky top-0 z-10">
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => {
@@ -260,7 +259,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                                 </TableRow>
                             ))}
                         </TableHeader>
-                        <TableBody>
+                        <TableBody className="**:data-[slot=table-cell]:first:w-8">
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow

@@ -57,8 +57,6 @@ import {BathroomPass} from "@/app/dashboard/components/table-schema";
 import {handleExport} from "@/app/dashboard/components/handle-export";
 import {
     ButtonGroup,
-    ButtonGroupSeparator,
-    ButtonGroupText,
 } from "@/components/ui/button-group"
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
@@ -110,12 +108,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
             onValueChange={setActiveTab}
             className="flex w-full flex-col justify-start gap-6"
         >
-            <div className="flex items-center justify-between px-4 lg:px-6">
-                <TabsList>
-                    <TabsTrigger value="outline">History</TabsTrigger>
-                    <TabsTrigger value="active">Active Passes</TabsTrigger>
-                </TabsList>
-
+            <div className="flex items-center justify-end px-4 lg:px-6">
                 {/* .CSV export commands */}
                 {activeTab === 'outline' && (
                     <div className="flex items-center gap-2">

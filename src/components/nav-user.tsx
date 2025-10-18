@@ -8,9 +8,7 @@ import {
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -19,8 +17,6 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
-    MonitorX,
-    MonitorCheck,
     EllipsisVerticalIcon,
     LogOutIcon,
 } from "lucide-react";

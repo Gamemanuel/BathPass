@@ -25,24 +25,13 @@ import {
     LogOutIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client"; // Use the browser client for logout
-import { useTransition } from "react";
-import { toggleTvMode } from "@/app/actions"; // Server action for the toggle
 
 // This component now receives its data via props
 export function NavUserClient({
                                   user,
-                                  tvModeEnabled,
                               }: {
     user: { name: string; email: string; avatar: string };
-    tvModeEnabled: boolean;
 }) {
-    const [isPending, startTransition] = useTransition();
-
-    const handleToggle = () => {
-        startTransition(() => {
-            toggleTvMode();
-        });
-    };
 
     const handleLogout = async () => {
         const supabase = createClient();
@@ -81,19 +70,6 @@ export function NavUserClient({
                         align="end"
                         sideOffset={4}
                     >
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={handleToggle} disabled={isPending}>
-                                {tvModeEnabled ? (
-                                    <MonitorX className="mr-2 size-4" />
-                                ) : (
-                                    <MonitorCheck className="mr-2 size-4" />
-                                )}
-                                <span>
-                  {tvModeEnabled ? "Disable TV Mode" : "Enable TV Mode"}
-                </span>
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOutIcon className="mr-2 size-4" />
                             <span>Log out</span>

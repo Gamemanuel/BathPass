@@ -8,7 +8,7 @@ export const columns: ColumnDef<BathroomPass>[] = [
         id: "select",
         header: ({ table }) => (
             <div className="flex items-center justify-center">
-                {/* Checkbox that selects all the rows for export*/}
+                {/* Checkbox that selects all the rows for exportc*/}
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||

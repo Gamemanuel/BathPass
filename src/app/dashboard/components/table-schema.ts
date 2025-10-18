@@ -1,5 +1,6 @@
 import {z} from "zod";
 
+// defines the database columns we use this to convert from supabase to the data table.
 export const bathroomPassSchema = z.object({
     id: z.number(),
     name: z.string(),

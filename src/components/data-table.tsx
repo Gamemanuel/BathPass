@@ -6,8 +6,9 @@ import {
     ChevronRightIcon,
     ChevronsLeftIcon,
     ChevronsRightIcon,
-    DownloadIcon,
+    DownloadIcon, Minus, Plus,
     SearchIcon,
+    ArrowUp10,
 } from "lucide-react"
 import {
     ColumnFiltersState,
@@ -54,6 +55,11 @@ import {
 import {columns} from "@/app/dashboard/components/columns";
 import {BathroomPass} from "@/app/dashboard/components/table-schema";
 import {handleExport} from "@/app/dashboard/components/handle-export";
+import {
+    ButtonGroup,
+    ButtonGroupSeparator,
+    ButtonGroupText,
+} from "@/components/ui/button-group"
 
 export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [data] = React.useState(initialData)
@@ -70,6 +76,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
     const [globalFilter, setGlobalFilter] = React.useState<string>("")
     const [activeTab, setActiveTab] = React.useState("outline")
 
+    // definitions of the table
     const table = useReactTable({
         data,
         columns,
@@ -112,6 +119,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                 {/* .CSV export commands */}
                 {activeTab === 'outline' && (
                     <div className="flex items-center gap-2">
+
                         <div className="relative">
                             <SearchIcon className="text-muted-foreground absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
                             <Input
@@ -121,9 +129,37 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                                 className="h-9 w-40 pl-9 lg:w-64"
                             />
                         </div>
+                        {/* TODO:// make this so it searches for what time totals are greater than the number that is imputed*/}
+                        <ButtonGroup>
+                            <Input
+                                id="number-of-gpus-f6l"
+                                placeholder="0"
+                                size={3}
+                                className="h-9 !w-14 font-mono"
+                                maxLength={3}
+                            />
+                            <Button
+                                variant="outline"
+                                size="icon-sm"
+                                type="button"
+                                aria-label="Decrement"
+                                className="h-9"
+                            >
+                                <Minus/>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="icon-sm"
+                                type="button"
+                                aria-label="Increment"
+                                className="h-9"
+                            >
+                                <Plus/>
+                            </Button>
+                        </ButtonGroup>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm" className="gap-2">
+                                <Button variant="outline" size="sm" className="gap-2 h-9">
                                     <DownloadIcon className="h-4 w-4" />
                                     <span className="hidden lg:inline">Export</span>
                                 </Button>
@@ -148,6 +184,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+
                     </div>
                 )}
 
@@ -286,7 +323,7 @@ export function DataTable({ initialData }: { initialData: BathroomPass[] }) {
                 className="flex flex-col px-4 lg:px-6"
             >
                 <div className="flex-1 aspect-video w-full rounded-lg border border-dashed">
-                    {/* Active Passes UI */}
+                    {/* Active Passes UI But nothing is here right now */}
                 </div>
             </TabsContent>
         </Tabs>

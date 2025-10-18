@@ -10,18 +10,16 @@ import {
   IconFileDescription,
   IconFileWord,
   IconFolder,
+  //   the code that uses this icon is currently commented out. DONT Remove
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
-  IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUserClient } from "@/components/nav-user"
 import {
   Sidebar,
@@ -32,17 +30,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {NavTv} from "@/components/nav-tv";
+import {NavFooter} from "@/components/nav-footer";
+import {
+    Settings
+} from "lucide-react";
 
 const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
     navMain: [
         {
             title: "Dashboard",
-            url: "#",
+            url: "https://google.com",
             icon: IconDashboard,
         },
         {
@@ -114,24 +112,25 @@ const data = {
             ],
         },
     ],
-    navSecondary: [
+    navFooter: [
         {
             title: "Settings",
-            url: "#",
-            icon: IconSettings,
+            url: "/dashboard/settings",
+            icon: Settings,
         },
-        {
-            title: "Get Help",
-            url: "#",
-            icon: IconHelp,
-        },
-        {
-            title: "Search",
-            url: "#",
-            icon: IconSearch,
-        },
+        // {
+        //     title: "Get Help",
+        //     url: "#",
+        //     icon: IconHelp,
+        // },
+        // TODO:// figure out how to make the search bar become a command pallet.
+        // {
+        //     title: "Search",
+        //     url: "#",
+        //     icon: IconSearch,
+        // },
     ],
-    documents: [
+    tvMode: [
         {
             name: "Data Library",
             url: "#",
@@ -180,13 +179,14 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                <NavDocuments items={data.documents} />
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
+                <NavTv items={data.tvMode} />
+                <NavFooter items={data.navFooter} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
                 {/* 3. Pass the 'user' prop to NavUserClient */}
                 <NavUserClient user={user} />
             </SidebarFooter>
+
         </Sidebar>
     )
 }

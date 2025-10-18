@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function NavSecondary({
+export function NavFooter({
   items,
   ...props
 }: {
@@ -25,6 +25,7 @@ export function NavSecondary({
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
+          {/* TODO:// one of these is going to be a search and i want the search to bring up a ctrl + k menu that can also be triggered by ctrl + k dont know how to search yet */}
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>

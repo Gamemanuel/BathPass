@@ -30,6 +30,13 @@ export default async function Page() {
         .select("*")
         // Don't sort by time out from top to bottom
         .order("time_out", {ascending: false})
+    
+    // Transform the Supabase user object into the format of the client components expect.
+    const userData = {
+        name: user.user_metadata?.name || user.email?.split('@')[0] || "User",
+        email: user.email || "no-email@example.com",
+        avatar: user.user_metadata?.avatar_url || "", // Use default avatar path if needed
+    }
 
     if (error) {
         console.error("Error fetching data:", error)
@@ -50,7 +57,7 @@ export default async function Page() {
                 } as React.CSSProperties
             }
         >
-            <AppSidebar variant="inset" />
+            <AppSidebar variant="inset" user={userData} />
             <SidebarInset>
                 {/* The Navigation Bar for the website. We pass the --header-height variable into it. */}
                 <SiteHeader/>
@@ -67,3 +74,5 @@ export default async function Page() {
     )
 
 }
+
+

@@ -49,8 +49,6 @@ import {
 import {
     Tabs,
     TabsContent,
-    TabsList,
-    TabsTrigger,
 } from "@/components/ui/tabs"
 import {columns} from "@/app/dashboard/components/columns";
 import {BathroomPass} from "@/app/dashboard/components/table-schema";

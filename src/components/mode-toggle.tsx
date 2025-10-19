@@ -16,6 +16,7 @@ export function ModeToggle() {
     const { setTheme } = useTheme()
 
     return (
+        // TODO:// make this look like nav-user.tsx
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">

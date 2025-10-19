@@ -1,4 +1,4 @@
-"use client"; // This file is now exclusively for client-side logic
+"use client";
 
 import {
     Avatar,
@@ -54,8 +54,8 @@ export function NavUserClient({
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{user.name}</span>
                                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
+                                    {user.email}
+                                </span>
                             </div>
                             <EllipsisVerticalIcon className="ml-auto size-4" />
                         </SidebarMenuButton>

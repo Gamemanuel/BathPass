@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import {Icon} from "@tabler/icons-react";
+import { type LucideIcon} from "lucide-react";
 
 export function NavTv({
   items,
@@ -15,13 +15,13 @@ export function NavTv({
   items: {
     name: string
     url: string
-    icon: Icon
+    icon: LucideIcon
   }[]
 }) {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+      <SidebarGroupLabel>Tv Settings</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>

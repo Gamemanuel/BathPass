@@ -34,9 +34,9 @@ import {NavTv} from "@/components/nav-tv";
 import {NavFooter} from "@/components/nav-footer";
 import {
     Settings,
-    // These inputs are commented out in the data
+    // These inputs are commented out in the const data
     Search,
-    MessageCircleQuestionMark,
+    MessageCircleQuestionMark, Wallpaper, CalendarClock, NotebookPen, Backpack,
 } from "lucide-react";
 
 const data = {
@@ -66,54 +66,11 @@ const data = {
             url: "#",
             icon: IconUsers,
         },
-    ],
-    navClouds: [
-        {
-            title: "Capture",
-            icon: IconCamera,
-            isActive: true,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Proposal",
-            icon: IconFileDescription,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Prompts",
-            icon: IconFileAi,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
+        // {
+        //     name: "View Line",
+        //     url: "/dashboard/line",
+        //     icon: IconFileWord,
+        // },
     ],
     navFooter: [
         {
@@ -135,19 +92,24 @@ const data = {
     ],
     tvMode: [
         {
-            name: "Data Library",
-            url: "#",
-            icon: IconDatabase,
+            name: "Manage Backgrounds",
+            url: "/dashboard/backgrounds",
+            icon: Wallpaper,
         },
         {
-            name: "Reports",
-            url: "#",
-            icon: IconReport,
+            name: "Configure Classes",
+            url: "/dashboard/classes",
+            icon: Backpack,
         },
         {
-            name: "Word Assistant",
-            url: "#",
-            icon: IconFileWord,
+            name: "Configure CLO",
+            url: "/dashboard/clo",
+            icon: NotebookPen,
+        },
+        {
+            name: "Edit Schedule",
+            url: "/dashboard/schedule",
+            icon: CalendarClock,
         },
     ],
 }

@@ -31,41 +31,27 @@ import {
     Wallpaper,
     CalendarClock,
     NotebookPen,
-    Backpack,
+    Backpack, ClipboardClock, GalleryVerticalEnd,
 } from "lucide-react";
+import {ModeToggle} from "@/components/mode-toggle";
 
 const data = {
     navMain: [
         {
-            title: "Dashboard",
-            url: "https://google.com",
-            icon: IconDashboard,
+            name: "View Line",
+            url: "/dashboard/line",
+            icon: ClipboardClock,
         },
         {
-            title: "Lifecycle",
-            url: "#",
-            icon: IconListDetails,
+            name: "View Line",
+            url: "/dashboard/line",
+            icon: ClipboardClock,
         },
         {
-            title: "Analytics",
-            url: "#",
-            icon: IconChartBar,
+            name: "View Line",
+            url: "/dashboard/line",
+            icon: ClipboardClock,
         },
-        {
-            title: "Projects",
-            url: "#",
-            icon: IconFolder,
-        },
-        {
-            title: "Team",
-            url: "#",
-            icon: IconUsers,
-        },
-        // {
-        //     name: "View Line",
-        //     url: "/dashboard/line",
-        //     icon: IconFileWord,
-        // },
     ],
     tvMode: [
         {
@@ -123,19 +109,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            asChild
-                            className="data-[slot=sidebar-menu-button]:!p-1.5"
-                        >
-                            <a href="#">
-                                <IconInnerShadowTop className="!size-5" />
-                                <span className="text-base font-semibold">Acme Inc.</span>
-                            </a>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {/* 3. Pass the 'user' prop to NavUserClient */}
+                <NavUserClient user={user} />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
@@ -143,10 +118,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <NavFooter items={data.navFooter} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                {/* 3. Pass the 'user' prop to NavUserClient */}
-                <NavUserClient user={user} />
+                {/* TODO:// maybe make the mode toggle wider? */}
+                <ModeToggle/>
             </SidebarFooter>
-
         </Sidebar>
     )
 }

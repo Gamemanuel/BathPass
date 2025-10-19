@@ -1,14 +1,6 @@
 "use client"
 
 import * as React from "react"
-import {
-  IconChartBar,
-  IconDashboard,
-  IconFolder,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconUsers,
-} from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUserClient } from "@/components/nav-user"
@@ -17,9 +9,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {NavTv} from "@/components/nav-tv";
 import {NavFooter} from "@/components/nav-footer";
@@ -31,7 +20,8 @@ import {
     Wallpaper,
     CalendarClock,
     NotebookPen,
-    Backpack, ClipboardClock, GalleryVerticalEnd,
+    Backpack,
+    ClipboardClock,
 } from "lucide-react";
 import {ModeToggle} from "@/components/mode-toggle";
 
@@ -95,7 +85,6 @@ const data = {
     ],
 }
 
-// 1. Define the props for AppSidebar, including the user
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
     user: {
         name: string
@@ -104,7 +93,6 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
     }
 }
 
-// 2. Accept 'user' as a prop
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>

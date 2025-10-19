@@ -33,7 +33,10 @@ import {
 import {NavTv} from "@/components/nav-tv";
 import {NavFooter} from "@/components/nav-footer";
 import {
-    Settings
+    Settings,
+    // These inputs are commented out in the data
+    Search,
+    MessageCircleQuestionMark,
 } from "lucide-react";
 
 const data = {
@@ -121,13 +124,13 @@ const data = {
         // {
         //     title: "Get Help",
         //     url: "#",
-        //     icon: IconHelp,
+        //     icon: MessageCircleQuestionMark,
         // },
         // TODO:// figure out how to make the search bar become a command pallet.
         // {
         //     title: "Search",
         //     url: "#",
-        //     icon: IconSearch,
+        //     icon: Search,
         // },
     ],
     tvMode: [

@@ -2,20 +2,11 @@
 
 import * as React from "react"
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconFolder,
-  //   the code that uses this icon is currently commented out. DONT Remove
-  IconHelp,
   IconInnerShadowTop,
   IconListDetails,
-  IconReport,
-  IconSearch,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -36,7 +27,11 @@ import {
     Settings,
     // These inputs are commented out in the const data
     Search,
-    MessageCircleQuestionMark, Wallpaper, CalendarClock, NotebookPen, Backpack,
+    MessageCircleQuestionMark,
+    Wallpaper,
+    CalendarClock,
+    NotebookPen,
+    Backpack,
 } from "lucide-react";
 
 const data = {
@@ -72,24 +67,6 @@ const data = {
         //     icon: IconFileWord,
         // },
     ],
-    navFooter: [
-        {
-            title: "Settings",
-            url: "/dashboard/settings",
-            icon: Settings,
-        },
-        // {
-        //     title: "Get Help",
-        //     url: "#",
-        //     icon: MessageCircleQuestionMark,
-        // },
-        // TODO:// figure out how to make the search bar become a command pallet.
-        // {
-        //     title: "Search",
-        //     url: "#",
-        //     icon: Search,
-        // },
-    ],
     tvMode: [
         {
             name: "Manage Backgrounds",
@@ -111,6 +88,24 @@ const data = {
             url: "/dashboard/schedule",
             icon: CalendarClock,
         },
+    ],
+    navFooter: [
+        {
+            title: "Settings",
+            url: "/dashboard/settings",
+            icon: Settings,
+        },
+        // {
+        //     title: "Get Help",
+        //     url: "#",
+        //     icon: MessageCircleQuestionMark,
+        // },
+        // TODO:// figure out how to make the search bar become a command pallet.
+        // {
+        //     title: "Search",
+        //     url: "#",
+        //     icon: Search,
+        // },
     ],
 }
 

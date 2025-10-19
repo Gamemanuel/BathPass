@@ -20,19 +20,21 @@ import {
     EllipsisVerticalIcon,
     LogOutIcon,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client"; // Use the browser client for logout
+// Use the browser client for logout
+import { createClient } from "@/lib/supabase/client";
 
 // This component now receives its data via props
-export function NavUserClient({
-                                  user,
-                              }: {
-    user: { name: string; email: string; avatar: string };
+export function NavUserClient({user,}: {
+    user: {
+        name: string;
+        email: string;
+        avatar: string
+    };
 }) {
 
     const handleLogout = async () => {
         const supabase = createClient();
         await supabase.auth.signOut();
-        // In the App Router, it's better to use the router for navigation
         window.location.href = '/login';
     };
 

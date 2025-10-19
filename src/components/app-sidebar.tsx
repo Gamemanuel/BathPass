@@ -119,6 +119,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             </SidebarContent>
             <SidebarFooter>
                 {/* TODO:// maybe make the mode toggle wider? */}
+                {/* TODO:// Rebuild the mode toggle to make it like the nav user but with mode toggle instead of user displayment*/}
                 <ModeToggle/>
             </SidebarFooter>
         </Sidebar>

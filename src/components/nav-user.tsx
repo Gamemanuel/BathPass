@@ -7,21 +7,23 @@ import {
 } from "@/components/ui/avatar";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
+    DropdownMenuContent, DropdownMenuGroup,
+    DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
+    SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 import {
+    Bell,
     EllipsisVerticalIcon,
-    LogOutIcon,
+    LogOutIcon, Settings,
 } from "lucide-react";
 // Use the browser client for logout
 import { createClient } from "@/lib/supabase/client";
+import * as React from "react";
 
 // This component now receives its data via props
 export function NavUserClient({user,}: {
@@ -37,6 +39,9 @@ export function NavUserClient({user,}: {
         await supabase.auth.signOut();
         window.location.href = '/login';
     };
+
+    // Handles the mobile sidebar
+    const { isMobile } = useSidebar()
 
     return (
         <SidebarMenu>
@@ -64,10 +69,31 @@ export function NavUserClient({user,}: {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                        side="bottom"
+                        side={isMobile ? "bottom" : "right"}
                         align="end"
                         sideOffset={4}
                     >
+                        <DropdownMenuLabel className="p-0 font-normal">
+                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                <Avatar className="h-8 w-8 rounded-lg">
+                                    <AvatarImage src="" alt="Gavin" />
+                                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                </Avatar>
+                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                    <span className="truncate font-medium">Gavin</span>
+                                    <span className="truncate text-xs">themathnight@outlook.com</span>
+                                </div>
+                            </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <Settings />
+                                Settings
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOutIcon className="mr-2 size-4" />
                             <span>Log out</span>

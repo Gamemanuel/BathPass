@@ -12,10 +12,6 @@ import {
 } from "@/components/ui/sidebar"
 import {NavTv} from "@/components/nav-tv";
 import {
-    // These icons where removed but they need to be added to the user tsx page.
-    Settings,
-    Search,
-    MessageCircleQuestionMark,
     Wallpaper,
     CalendarClock,
     NotebookPen,

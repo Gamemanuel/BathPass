@@ -13,8 +13,8 @@ import {
 import {NavTv} from "@/components/nav-tv";
 import {NavFooter} from "@/components/nav-footer";
 import {
+    // These icons where removed but they need to be added to the user tsx page.
     Settings,
-    // These inputs are commented out in the const data
     Search,
     MessageCircleQuestionMark,
     Wallpaper,
@@ -64,24 +64,6 @@ const data = {
             icon: CalendarClock,
         },
     ],
-    navFooter: [
-        {
-            title: "Settings",
-            url: "/dashboard/settings",
-            icon: Settings,
-        },
-        // {
-        //     title: "Get Help",
-        //     url: "#",
-        //     icon: MessageCircleQuestionMark,
-        // },
-        // TODO:// figure out how to make the search bar become a command pallet.
-        // {
-        //     title: "Search",
-        //     url: "#",
-        //     icon: Search,
-        // },
-    ],
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
@@ -100,7 +82,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             <SidebarContent>
                 <NavMain items={data.navMain} />
                 <NavTv items={data.tvMode} />
-                <NavFooter items={data.navFooter} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
                 {/* 3. Pass the 'user' prop to NavUserClient */}

@@ -22,22 +22,28 @@ import {
 } from "@/components/ui/sidebar";
 import {
     EllipsisVerticalIcon,
+    HelpCircle,
     LogOutIcon,
     Settings,
 } from "lucide-react";
-// Use the browser client for logout
+
+// Use the browser client for logout from our supabase client
 import { createClient } from "@/lib/supabase/client";
 import * as React from "react";
 
 // This component now receives its data via props
 export function NavUserClient({user}: {
+
+    // define the user props.
     user: {
         name: string;
         email: string;
         avatar: string
     };
+
 }) {
 
+    // Handle the user logout command
     const handleLogout = async () => {
         const supabase = createClient();
         await supabase.auth.signOut();
@@ -48,7 +54,7 @@ export function NavUserClient({user}: {
     const { isMobile } = useSidebar()
 
     return (
-        // TODO:// Check why the icon is not in color. I know it can be i wonder why it is not :{
+        // TODO:// Check why the icon is not in color. I know it can be i wonder why it is not :{ we need to check on that.
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>
@@ -102,10 +108,20 @@ export function NavUserClient({user}: {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuSeparator />
+                        {/* TODO:// add the links to their pages here in the dropdown. currently it does nothing*/}
                         <DropdownMenuGroup>
+                            {/* TODO:// This should redirect to a help page.*/}
                             <DropdownMenuItem>
-                                <Settings />
-                                Settings
+                                <a href="">
+                                    <HelpCircle />
+                                    <span>Help</span>
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <a href="">
+                                    <Settings />
+                                    <span>Settings</span>
+                                </a>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

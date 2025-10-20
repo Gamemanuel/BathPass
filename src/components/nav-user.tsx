@@ -7,26 +7,30 @@ import {
 } from "@/components/ui/avatar";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuGroup,
-    DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem, useSidebar,
+    SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar";
 import {
-    Bell,
     EllipsisVerticalIcon,
-    LogOutIcon, Settings,
+    LogOutIcon,
+    Settings,
 } from "lucide-react";
 // Use the browser client for logout
 import { createClient } from "@/lib/supabase/client";
 import * as React from "react";
 
 // This component now receives its data via props
-export function NavUserClient({user,}: {
+export function NavUserClient({user}: {
     user: {
         name: string;
         email: string;
@@ -59,12 +63,16 @@ export function NavUserClient({user,}: {
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">{user.name}</span>
-                                <span className="text-muted-foreground truncate text-xs">
+                                <span className="truncate font-medium">
+                                    {user.name}
+                                </span>
+                                <span className="truncate text-xs">
                                     {user.email}
                                 </span>
                             </div>
                             <EllipsisVerticalIcon className="ml-auto size-4" />
+                            {/* Alternative to the EllipsisVerticalIcon */}
+                            {/* <ChevronsUpDown className="ml-auto size-4" /> */}
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -75,13 +83,19 @@ export function NavUserClient({user,}: {
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage src="" alt="Gavin" />
-                                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                <Avatar className="h-8 w-8 rounded-lg grayscale">
+                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                    <AvatarFallback className="rounded-lg">
+                                        {user.name?.charAt(0).toUpperCase() || "U"}
+                                    </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-medium">Gavin</span>
-                                    <span className="truncate text-xs">themathnight@outlook.com</span>
+                                    <span className="truncate font-medium">
+                                        {user.name}
+                                    </span>
+                                    <span className="truncate text-xs">
+                                        {user.email}
+                                    </span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>

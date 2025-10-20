@@ -23,7 +23,6 @@ import {
     Backpack,
     ClipboardClock,
 } from "lucide-react";
-import {ModeToggle} from "@/components/mode-toggle";
 
 const data = {
     navMain: [
@@ -97,8 +96,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
-                {/* 3. Pass the 'user' prop to NavUserClient */}
-                <NavUserClient user={user} />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
@@ -106,9 +103,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <NavFooter items={data.navFooter} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                {/* TODO:// maybe make the mode toggle wider? */}
-                {/* TODO:// Rebuild the mode toggle to make it like the nav user but with mode toggle instead of user displayment*/}
-                <ModeToggle/>
+                {/* 3. Pass the 'user' prop to NavUserClient */}
+                <NavUserClient user={user} />
             </SidebarFooter>
         </Sidebar>
     )

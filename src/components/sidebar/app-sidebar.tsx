@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { NavMain } from "@/components/sidebar/nav-main"
-import { NavUserClient } from "@/components/nav-user"
+import { NavUserClient } from "@/components/sidebar/nav-user/nav-user"
 import {
     Sidebar,
     SidebarContent,

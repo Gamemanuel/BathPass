@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"; // Correctly import the server client
-import { NavUserClient } from "@/components/nav-user"; // Import the client component we'll update next
+import { NavUserClient } from "@/components/sidebar/nav-user/nav-user"; // Import the client component we'll update next
 
 export async function NavUser() {
     const supabase = await createClient(); // Use the server client

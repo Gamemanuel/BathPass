@@ -50,6 +50,16 @@ export function NavUserClient({user}: {
         window.location.href = '/login';
     };
 
+    // redirect to settings menu
+    const handleSettingsRedirect = () => {
+        window.location.href = "/dashboard/settings";
+    }
+
+    // redirect to help menu
+    const handleHelpRedirect = () => {
+        window.location.href = "/help";
+    }
+
     // Handles the mobile sidebar
     const { isMobile } = useSidebar()
 
@@ -111,17 +121,13 @@ export function NavUserClient({user}: {
                         {/* TODO:// add the links to their pages here in the dropdown. currently it does nothing*/}
                         <DropdownMenuGroup>
                             {/* TODO:// This should redirect to a help page.*/}
-                            <DropdownMenuItem>
-                                <a href="">
-                                    <HelpCircle />
-                                    <span>Help</span>
-                                </a>
+                            <DropdownMenuItem onClick={handleHelpRedirect}>
+                                <HelpCircle />
+                                <span>Help</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <a href="">
-                                    <Settings />
-                                    <span>Settings</span>
-                                </a>
+                            <DropdownMenuItem onClick={handleSettingsRedirect}>
+                                <Settings />
+                                <span>Settings</span>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

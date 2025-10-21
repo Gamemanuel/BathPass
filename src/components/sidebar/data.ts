@@ -13,16 +13,6 @@ export const data = {
             url: "/dashboard/line",
             icon: ClipboardClock,
         },
-        {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
-        {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
     ],
     tvMode: [
         {

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {ModeToggle} from "@/components/mode-toggle";
+import {ModeToggle} from "@/components/mode-toggle/mode-toggle";
 
 export default function LoginPage() {
     const [isVerified, setIsVerified] = useState(false);

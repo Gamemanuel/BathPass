@@ -1,66 +1,19 @@
 "use client"
 
 import * as React from "react"
-
 import { NavMain } from "@/components/nav-main"
 import { NavUserClient } from "@/components/nav-user"
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {NavTv} from "@/components/nav-tv";
-import {
-    Wallpaper,
-    CalendarClock,
-    NotebookPen,
-    Backpack,
-    ClipboardClock,
-} from "lucide-react";
-import {IconInnerShadowTop} from "@tabler/icons-react";
-
-const data = {
-    navMain: [
-        {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
-        {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
-        {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
-    ],
-    tvMode: [
-        {
-            name: "Manage Backgrounds",
-            url: "/dashboard/backgrounds",
-            icon: Wallpaper,
-        },
-        {
-            name: "Configure Classes",
-            url: "/dashboard/classes",
-            icon: Backpack,
-        },
-        {
-            name: "Configure CLO",
-            url: "/dashboard/clo",
-            icon: NotebookPen,
-        },
-        {
-            name: "Edit Schedule",
-            url: "/dashboard/schedule",
-            icon: CalendarClock,
-        },
-    ],
-}
+import {data} from "@/components/sidebar/data"
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
     user: {

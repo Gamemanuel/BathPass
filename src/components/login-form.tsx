@@ -14,6 +14,7 @@ import React from "react";
 export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
     const supabase = createClient();
 
+    // This code handles the github login redirection
     const handleGitHubLogin = async () => {
         await supabase.auth.signInWithOAuth({
             provider: "github",
@@ -23,6 +24,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
         });
     };
 
+    // This code handles the discord login redirection
     const handleDiscordLogin = async () => {
         await supabase.auth.signInWithOAuth({
             provider: "discord",

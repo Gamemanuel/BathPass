@@ -64,7 +64,6 @@ export function NavUserClient({user}: {
     const { isMobile } = useSidebar()
 
     return (
-        // TODO:// Check why the icon is not in color. I know it can be i wonder why it is not :{ we need to check on that.
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>

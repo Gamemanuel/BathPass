@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { NavMain } from "@/components/sidebar/nav-main"
-import { NavUserClient } from "@/components/sidebar/nav-user/nav-user"
 import {
     Sidebar,
     SidebarContent,
@@ -14,16 +13,9 @@ import {
 } from "@/components/ui/sidebar"
 import {NavTv} from "@/components/sidebar/nav-tv";
 import {data} from "@/components/sidebar/data"
+import {NavUser} from "@/components/sidebar/nav-user/nav-user-server";
 
-type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-    user: {
-        name: string
-        email: string
-        avatar: string
-    }
-}
-
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -50,8 +42,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <NavTv items={data.tvMode} />
             </SidebarContent>
             <SidebarFooter>
-                {/* 3. Pass the 'user' prop to NavUserClient */}
-                <NavUserClient user={user} />
+                <NavUser />
             </SidebarFooter>
         </Sidebar>
     )

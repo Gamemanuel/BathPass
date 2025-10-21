@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
     Avatar,
@@ -121,11 +121,11 @@ export function NavUserClient({user}: {
                         <DropdownMenuGroup>
                             {/* TODO:// This should redirect to a help page.*/}
                             <DropdownMenuItem onClick={handleHelpRedirect}>
-                                <HelpCircle />
+                                <HelpCircle className="mr-2 size-4"/>
                                 <span>Help</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleSettingsRedirect}>
-                                <Settings />
+                                <Settings className="mr-2 size-4"/>
                                 <span>Settings</span>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>

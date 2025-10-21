@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { NavMain } from "@/components/nav-main"
+import { NavMain } from "@/components/sidebar/nav-main"
 import { NavUserClient } from "@/components/nav-user"
 import {
     Sidebar,
@@ -12,7 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import {NavTv} from "@/components/nav-tv";
+import {NavTv} from "@/components/sidebar/nav-tv";
 import {data} from "@/components/sidebar/data"
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {

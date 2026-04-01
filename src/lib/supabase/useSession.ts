@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 
 export function useSession() {
-    // ignore the "any" error here
-    const [session, setSession] = useState<any>(null);
+    const [session, setSession] = useState<Session | null>(null);
 
     useEffect(() => {
         const supabase = createClient();

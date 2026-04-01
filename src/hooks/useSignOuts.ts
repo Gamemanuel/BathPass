@@ -15,7 +15,10 @@ export function useSignOuts(classId?: string) {
     try {
       const url = classId ? `/api/signouts?classId=${classId}` : "/api/signouts"
       const res = await fetch(url)
-      if (!res.ok) throw new Error("Failed to fetch sign-outs")
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body?.error ?? `Request failed with status ${res.status}`)
+      }
       const data = await res.json()
       setSignOuts(data)
     } catch (err) {

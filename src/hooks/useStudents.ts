@@ -15,7 +15,10 @@ export function useStudents(classId: string | null) {
     setError(null)
     try {
       const res = await fetch(`/api/students?classId=${classId}`)
-      if (!res.ok) throw new Error("Failed to fetch students")
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body?.error ?? `Request failed with status ${res.status}`)
+      }
       const data = await res.json()
       setStudents(data)
     } catch (err) {

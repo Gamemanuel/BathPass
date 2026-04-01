@@ -182,7 +182,7 @@ function ClassCard({ cls, onDelete, onUpdate }: {
 }
 
 export default function ClassesPage() {
-    const { classes, loading, createClass, updateClass, deleteClass } = useClasses()
+    const { classes, loading, error, createClass, updateClass, deleteClass } = useClasses()
     const [newClassName, setNewClassName] = useState("")
     const [newClassDesc, setNewClassDesc] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -278,7 +278,26 @@ export default function ClassesPage() {
                 </Dialog>
             </div>
 
-            {loading ? (
+            {error ? (
+                <Card className="border-destructive">
+                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="rounded-full bg-destructive/10 p-3 mb-4">
+                            <svg className="h-6 w-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-1">Database not set up</h3>
+                        <p className="text-muted-foreground text-sm mb-2 max-w-md">
+                            {error}
+                        </p>
+                        {error.toLowerCase().includes("relation") || error.toLowerCase().includes("does not exist") ? (
+                            <p className="text-sm text-muted-foreground max-w-md">
+                                Run the SQL migration in <code className="bg-muted px-1 rounded">supabase/migrations/001_initial_schema.sql</code> in your Supabase SQL editor to create the required tables.
+                            </p>
+                        ) : null}
+                    </CardContent>
+                </Card>
+            ) : loading ? (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {[1, 2, 3].map((i) => (
                         <Card key={i}>

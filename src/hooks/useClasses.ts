@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { Class } from "@/types"
 
@@ -79,26 +79,25 @@ export function useTvModeSettings(classId: string) {
     show_students: boolean
   } | null>(null)
   const [loading, setLoading] = useState(true)
-
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const fetchSettings = useCallback(async () => {
     setLoading(true)
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from("tv_mode_settings")
       .select("*")
       .eq("class_id", classId)
       .single()
     setSettings(data)
     setLoading(false)
-  }, [classId, supabase])
+  }, [classId])
 
   useEffect(() => {
     if (classId) fetchSettings()
   }, [classId, fetchSettings])
 
   const updateSettings = async (updates: Partial<typeof settings>) => {
-    const { error } = await supabase
+    const { error } = await supabaseRef.current
       .from("tv_mode_settings")
       .upsert({ class_id: classId, ...settings, ...updates, updated_at: new Date().toISOString() })
     if (error) throw new Error(error.message)

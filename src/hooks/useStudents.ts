@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { Student } from "@/types"
 
@@ -67,13 +67,12 @@ export function useActiveStudents(classId: string | null) {
     class_id: string
   }[]>([])
   const [loading, setLoading] = useState(false)
-
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const fetchActive = useCallback(async () => {
     if (!classId) return
     setLoading(true)
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from("sign_outs")
       .select("*")
       .eq("class_id", classId)
@@ -81,12 +80,13 @@ export function useActiveStudents(classId: string | null) {
       .order("time_out", { ascending: true })
     setActiveStudents(data ?? [])
     setLoading(false)
-  }, [classId, supabase])
+  }, [classId])
 
   useEffect(() => {
     if (classId) {
       fetchActive()
       // Real-time subscription
+      const supabase = supabaseRef.current
       const channel = supabase
         .channel(`sign_outs:${classId}`)
         .on(
@@ -98,7 +98,7 @@ export function useActiveStudents(classId: string | null) {
 
       return () => { supabase.removeChannel(channel) }
     }
-  }, [classId, fetchActive, supabase])
+  }, [classId, fetchActive])
 
   return { activeStudents, loading, fetchActive }
 }

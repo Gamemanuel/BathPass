@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import type { SignOut } from "@/types"
 
@@ -77,13 +77,12 @@ export function useSignOuts(classId?: string) {
 export function useActiveSignOuts(classId: string | null) {
   const [activeSignOuts, setActiveSignOuts] = useState<SignOut[]>([])
   const [loading, setLoading] = useState(false)
-
-  const supabase = createClient()
+  const supabaseRef = useRef(createClient())
 
   const fetchActive = useCallback(async () => {
     if (!classId) return
     setLoading(true)
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from("sign_outs")
       .select("*")
       .eq("class_id", classId)
@@ -91,11 +90,12 @@ export function useActiveSignOuts(classId: string | null) {
       .order("time_out", { ascending: true })
     setActiveSignOuts((data as SignOut[]) ?? [])
     setLoading(false)
-  }, [classId, supabase])
+  }, [classId])
 
   useEffect(() => {
     if (classId) {
       fetchActive()
+      const supabase = supabaseRef.current
       const channel = supabase
         .channel(`active_signouts:${classId}`)
         .on(
@@ -107,7 +107,7 @@ export function useActiveSignOuts(classId: string | null) {
 
       return () => { supabase.removeChannel(channel) }
     }
-  }, [classId, fetchActive, supabase])
+  }, [classId, fetchActive])
 
   const markReturned = async (id: string) => {
     const res = await fetch(`/api/signouts/${id}`, {

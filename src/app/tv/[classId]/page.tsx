@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback, use } from "react"
+import React, { useState, useEffect, useCallback, use, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { formatDistanceToNow } from "date-fns"
 import type { TvModeSettings, Class, SignOut } from "@/types"
@@ -17,10 +17,10 @@ export default function TvPage({ params }: TvPageProps) {
     const [activeSignOuts, setActiveSignOuts] = useState<SignOut[]>([])
     const [currentTime, setCurrentTime] = useState(new Date())
     const [loading, setLoading] = useState(true)
-
-    const supabase = createClient()
+    const supabaseRef = useRef(createClient())
 
     const fetchData = useCallback(async () => {
+        const supabase = supabaseRef.current
         const [classRes, settingsRes, signOutsRes] = await Promise.all([
             supabase.from("classes").select("*").eq("id", classId).single(),
             supabase.from("tv_mode_settings").select("*").eq("class_id", classId).single(),
@@ -36,11 +36,12 @@ export default function TvPage({ params }: TvPageProps) {
         setSettings(settingsRes.data as TvModeSettings)
         setActiveSignOuts((signOutsRes.data as SignOut[]) ?? [])
         setLoading(false)
-    }, [classId, supabase])
+    }, [classId])
 
     useEffect(() => {
         fetchData()
 
+        const supabase = supabaseRef.current
         // Real-time subscription for sign-outs
         const channel = supabase
             .channel(`tv_signouts:${classId}`)
@@ -58,7 +59,7 @@ export default function TvPage({ params }: TvPageProps) {
             supabase.removeChannel(channel)
             clearInterval(clockInterval)
         }
-    }, [classId, fetchData, supabase])
+    }, [classId, fetchData])
 
     const fontFamily = settings?.font_family ?? "Inter"
     const textColor = settings?.text_color ?? "#FFFFFF"

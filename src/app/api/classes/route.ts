@@ -43,6 +43,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Class name is required" }, { status: 400 })
     }
 
+    // Ensure a teacher profile row exists for this user. The on_auth_user_created
+    // trigger normally handles this, but users who signed up before the migration
+    // ran won't have a row — causing the classes FK to fail.
+    const { error: upsertError } = await supabase
+      .from("teachers")
+      .upsert(
+        {
+          id: user.id,
+          email: user.email ?? "",
+          name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email?.split("@")[0] ?? "",
+          avatar_url: user.user_metadata?.avatar_url ?? null,
+        },
+        { onConflict: "id" }
+      )
+
+    if (upsertError) {
+      return NextResponse.json({ error: upsertError.message }, { status: 500 })
+    }
+
     const { data, error } = await supabase
       .from("classes")
       .insert({ name, description, teacher_id: user.id })

@@ -20,6 +20,9 @@ ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Teachers can view own profile" ON teachers
   FOR SELECT USING (auth.uid() = id);
 
+CREATE POLICY "Teachers can insert own profile" ON teachers
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
 CREATE POLICY "Teachers can update own profile" ON teachers
   FOR UPDATE USING (auth.uid() = id);
 

@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
-// PATCH /api/signouts/[id] - Mark student as returned
+// PATCH /api/bell-schedule/[id] — update a period
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -9,24 +9,19 @@ export async function PATCH(
   try {
     const { id } = await params
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const body = await request.json()
 
-    const updateData: Record<string, string | null> = {}
-
-    if (body.return) {
-      updateData.time_in = new Date().toISOString()
-    } else if (body.time_in !== undefined) {
-      updateData.time_in = body.time_in
-    }
-
-    if (body.time_out !== undefined) {
-      updateData.time_out = body.time_out
-    }
-
     const { data, error } = await supabase
-      .from("sign_outs")
-      .update(updateData)
+      .from("bell_schedule_periods")
+      .update(body)
       .eq("id", id)
+      .eq("teacher_id", user.id)
       .select()
       .single()
 
@@ -41,7 +36,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/signouts/[id]
+// DELETE /api/bell-schedule/[id] — delete a period
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -56,9 +51,10 @@ export async function DELETE(
     }
 
     const { error } = await supabase
-      .from("sign_outs")
+      .from("bell_schedule_periods")
       .delete()
       .eq("id", id)
+      .eq("teacher_id", user.id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })

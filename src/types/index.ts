@@ -16,8 +16,19 @@ export interface Class {
   tv_mode_enabled: boolean
   line_mode_enabled: boolean
   class_list_enabled: boolean
+  destinations?: string[]
   created_at: string
   updated_at: string
+}
+
+export interface BellPeriod {
+  id: string
+  teacher_id: string
+  name: string
+  start_time: string // "HH:MM:SS"
+  end_time: string   // "HH:MM:SS"
+  order_index: number
+  created_at: string
 }
 
 export interface Student {

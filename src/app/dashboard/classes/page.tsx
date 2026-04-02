@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
+import { Badge } from "@/components/ui/badge"
 import {
     Dialog,
     DialogContent,
@@ -18,10 +19,86 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { Backpack, Plus, Trash2, Upload, Users, Tv, ClipboardList } from "lucide-react"
+import { Backpack, Plus, Trash2, Upload, Users, Tv, ClipboardList, X, MapPin } from "lucide-react"
 import Papa from "papaparse"
 import type { Class, StudentCSVRow } from "@/types"
 import Link from "next/link"
+
+function DestinationsSection({ cls, onUpdate }: {
+    cls: Class
+    onUpdate: (id: string, updates: Partial<Class>) => void
+}) {
+    const [destinations, setDestinations] = useState<string[]>(cls.destinations ?? [])
+    const [newDest, setNewDest] = useState("")
+    const [saving, setSaving] = useState(false)
+
+    const addDestination = async () => {
+        const trimmed = newDest.trim()
+        if (!trimmed || destinations.includes(trimmed)) return
+        const updated = [...destinations, trimmed]
+        setDestinations(updated)
+        setNewDest("")
+        setSaving(true)
+        try {
+            await onUpdate(cls.id, { destinations: updated })
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const removeDestination = async (dest: string) => {
+        const updated = destinations.filter((d) => d !== dest)
+        setDestinations(updated)
+        setSaving(true)
+        try {
+            await onUpdate(cls.id, { destinations: updated })
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    return (
+        <div className="border-t pt-3 space-y-2">
+            <div className="flex items-center gap-2 mb-1">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Destinations</span>
+                {saving && <span className="text-xs text-muted-foreground ml-auto">Saving…</span>}
+            </div>
+            {destinations.length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                    No custom destinations — default list is used on the sign-out page.
+                </p>
+            ) : (
+                <div className="flex flex-wrap gap-1">
+                    {destinations.map((dest) => (
+                        <Badge key={dest} variant="secondary" className="gap-1 pr-1 text-xs">
+                            {dest}
+                            <button
+                                onClick={() => removeDestination(dest)}
+                                className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5"
+                                aria-label={`Remove ${dest}`}
+                            >
+                                <X className="h-2.5 w-2.5" />
+                            </button>
+                        </Badge>
+                    ))}
+                </div>
+            )}
+            <div className="flex gap-2">
+                <Input
+                    placeholder="Add destination…"
+                    value={newDest}
+                    onChange={(e) => setNewDest(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addDestination()}
+                    className="h-7 text-xs flex-1"
+                />
+                <Button size="sm" variant="outline" className="h-7 px-2" onClick={addDestination} disabled={!newDest.trim()}>
+                    <Plus className="h-3.5 w-3.5" />
+                </Button>
+            </div>
+        </div>
+    )
+}
 
 function ClassCard({ cls, onDelete, onUpdate }: {
     cls: Class
@@ -116,46 +193,30 @@ function ClassCard({ cls, onDelete, onUpdate }: {
                     </div>
                 </div>
 
-                {/* Class list / CSV upload */}
+                {/* Students / CSV */}
                 <div className="border-t pt-3">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <Users className="h-4 w-4 text-muted-foreground" />
                             <span className="text-sm font-medium">
-                                {studentsLoading ? "Loading..." : `${students.length} students`}
+                                {studentsLoading ? "Loading…" : `${students.length} students`}
                             </span>
                         </div>
                         <div className="flex gap-2">
-                            <input
-                                ref={fileRef}
-                                type="file"
-                                accept=".csv"
-                                className="hidden"
-                                onChange={handleCSVUpload}
-                            />
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="gap-1"
-                                disabled={uploading}
-                                onClick={() => fileRef.current?.click()}
-                            >
+                            <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleCSVUpload} />
+                            <Button variant="outline" size="sm" className="gap-1" disabled={uploading} onClick={() => fileRef.current?.click()}>
                                 <Upload className="h-3 w-3" />
-                                {uploading ? "Uploading..." : "Upload CSV"}
+                                {uploading ? "Uploading…" : "Upload CSV"}
                             </Button>
                         </div>
                     </div>
-                    {cls.class_list_enabled && (
-                        <p className="text-xs text-muted-foreground">
-                            Class list enabled — students can sign out by ID
-                        </p>
-                    )}
-                    <p className="text-xs text-muted-foreground mt-1">
-                        CSV format: <code>ID,Name</code> (one student per row)
-                    </p>
+                    <p className="text-xs text-muted-foreground">CSV format: <code>ID,Name</code> (one student per row)</p>
                 </div>
 
-                {/* TV mode link */}
+                {/* Destinations */}
+                <DestinationsSection cls={cls} onUpdate={onUpdate} />
+
+                {/* Links */}
                 {cls.tv_mode_enabled && (
                     <div className="border-t pt-3">
                         <Link href={`/tv/${cls.id}`} target="_blank">
@@ -166,8 +227,6 @@ function ClassCard({ cls, onDelete, onUpdate }: {
                         </Link>
                     </div>
                 )}
-
-                {/* Sign-out link */}
                 <div>
                     <Link href={`/student/signout?classId=${cls.id}`} target="_blank">
                         <Button variant="outline" size="sm" className="w-full gap-1">

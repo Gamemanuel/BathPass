@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import { Jua } from "next/font/google";
 import "./globals.css";
-import { Inter } from 'next/font/google';
 import { ThemeProvider } from "@/components/mode-toggle/theme-provider"
 import React from "react";
 import { Toaster } from "@/components/ui/sonner"
 
-const inter = Inter({
-    subsets: ['latin'],
-    variable: '--font-inter', // Define a CSS variable
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jua = Jua({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-jua",
 });
 
 const geistMono = Geist_Mono({
@@ -32,14 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className={`${jua.variable} ${geistMono.variable} antialiased`}
         >
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="dark"
+            enableSystem={false}
             disableTransitionOnChange
         >
             {children}
@@ -49,3 +45,4 @@ export default function RootLayout({
     </html>
   );
 }
+

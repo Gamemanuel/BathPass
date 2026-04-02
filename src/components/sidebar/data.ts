@@ -1,38 +1,44 @@
 import {
     Wallpaper,
     CalendarClock,
-    NotebookPen,
     Backpack,
     ClipboardClock,
+    History,
+    LayoutDashboard,
 } from "lucide-react";
 
 export const data = {
     navMain: [
         {
-            name: "View Line",
-            url: "/dashboard/line",
-            icon: ClipboardClock,
-        },
-    ],
-    tvMode: [
-        {
-            name: "Manage Backgrounds",
-            url: "/dashboard/backgrounds",
-            icon: Wallpaper,
+            name: "Overview",
+            url: "/dashboard",
+            icon: LayoutDashboard,
         },
         {
-            name: "Configure Classes",
+            name: "Classes",
             url: "/dashboard/classes",
             icon: Backpack,
         },
         {
-            name: "Configure CLO",
-            url: "/dashboard/clo",
-            icon: NotebookPen,
+            name: "Line",
+            url: "/dashboard/line",
+            icon: ClipboardClock,
         },
         {
-            name: "Edit Schedule",
-            url: "/dashboard/schedule",
+            name: "History",
+            url: "/dashboard/history",
+            icon: History,
+        },
+    ],
+    tvMode: [
+        {
+            name: "TV Settings",
+            url: "/dashboard/tv-settings",
+            icon: Wallpaper,
+        },
+        {
+            name: "Schedule / CLO",
+            url: "/dashboard/schedules",
             icon: CalendarClock,
         },
     ],

@@ -5,14 +5,7 @@ import {
     SidebarProvider,
 } from "@/components/ui/sidebar"
 
-import data from "./data.json"
-
 export default function Page() {
-    const user = {
-        name: "test",
-        email: "test@gmail.com",
-        avatar: "",
-    }
     return (
         <SidebarProvider
             style={
@@ -22,7 +15,7 @@ export default function Page() {
                 } as React.CSSProperties
             }
         >
-            <AppSidebar user={user} variant="inset" />
+            <AppSidebar variant="inset" />
             <SidebarInset>
                 <SiteHeader />
                 <div className="flex flex-1 flex-col">

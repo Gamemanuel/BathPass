@@ -8,7 +8,6 @@ import {
     ChevronsRightIcon,
     DownloadIcon, Minus, Plus,
     SearchIcon,
-    ArrowUp10,
 } from "lucide-react"
 import {
     ColumnFiltersState,

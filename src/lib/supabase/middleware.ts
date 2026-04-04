@@ -30,7 +30,11 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
+    if (
+        (request.nextUrl.pathname.startsWith('/dashboard') ||
+         request.nextUrl.pathname.startsWith('/hcb')) &&
+        !user
+    ) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 

@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HCB — Fiscal Sponsorship Platform
+
+A modern fiscal sponsorship platform built with Next.js 15, TypeScript, Supabase, and Tailwind CSS. Inspired by [Hack Club Bank (HCB)](https://hackclub.com/hcb/).
+
+## Features
+
+- **Organizations** — Create and manage multiple fiscal-sponsored organizations
+- **Transactions** — Track income, expenses, transfers, and reimbursements with full audit trails
+- **Cards** — Issue and manage virtual/physical Visa cards; freeze/unfreeze in one click
+- **Admin panel** — Platform-wide overview of organizations, users, and pending transactions
+- **Email login codes** — Stub for a passwordless email login flow (Supabase OAuth is the primary auth)
+- **CSV export** — Export transaction history to CSV
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript (strict) |
+| Auth | Supabase (OAuth — GitHub/Discord) |
+| Database | Prisma + PostgreSQL |
+| Styling | Tailwind CSS v4 |
+| UI Components | Radix UI + shadcn/ui |
+| Validation | Zod |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx                   # Landing page
+│   ├── hcb/
+│   │   ├── layout.tsx             # HCB shell (sidebar + auth guard)
+│   │   ├── dashboard/page.tsx     # Dashboard with stats & recent activity
+│   │   ├── organizations/         # Org list + detail pages
+│   │   ├── transactions/page.tsx  # Transaction history + filters + CSV export
+│   │   ├── cards/page.tsx         # Card management (freeze/unfreeze/cancel)
+│   │   ├── admin/page.tsx         # Admin overview
+│   │   └── settings/page.tsx      # User profile & notification settings
+│   └── api/hcb/                   # REST API routes (demo data)
+├── components/hcb/
+│   ├── sidebar.tsx                # Responsive navigation sidebar
+│   ├── stats-card.tsx             # KPI card component
+│   └── transaction-row.tsx        # Transaction table row
+└── lib/
+    ├── types.ts                   # TypeScript interfaces & enums
+    ├── demo-data.ts               # Mock data for development
+    ├── db.ts                      # Prisma client singleton
+    └── auth.ts                    # Email login-code helpers
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+
+- A Supabase project (or skip for demo mode)
+
+### Environment Variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+ADMIN_EMAIL=admin@yourorg.com   # Optional: grants admin access
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install & Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+> **Demo mode**: If Supabase env vars are not set, the `/hcb/*` pages still work with mock data. Auth redirects are bypassed gracefully.
 
-To learn more about Next.js, take a look at the following resources:
+### Database (optional)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Generate Prisma client
+npx prisma generate
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Apply schema to your database
+npx prisma migrate dev
+```
 
-## Deploy on Vercel
+## Routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page |
+| `/login` | BathPass teacher-key + OAuth login |
+| `/dashboard` | Original BathPass dashboard |
+| `/hcb/dashboard` | HCB main dashboard |
+| `/hcb/organizations` | Organization list |
+| `/hcb/organizations/[id]` | Organization detail (transactions, members, cards) |
+| `/hcb/transactions` | Transaction history with filters |
+| `/hcb/cards` | Card management |
+| `/hcb/admin` | Admin panel |
+| `/hcb/settings` | User settings |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## API Endpoints
+
+All endpoints are under `/api/hcb/` and return `{ data, error }` envelopes.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET/POST | `/api/hcb/organizations` | List / create organizations |
+| GET/PATCH/DELETE | `/api/hcb/organizations/[id]` | Get / update / delete org |
+| GET/POST | `/api/hcb/transactions` | List / create transactions |
+| GET/PATCH | `/api/hcb/transactions/[id]` | Get / update transaction |
+| GET/POST | `/api/hcb/cards` | List / issue cards |
+| GET/PATCH | `/api/hcb/cards/[id]` | Get / freeze/unfreeze card |
+| POST | `/api/hcb/auth/login` | Initiate email login code |
+| POST | `/api/hcb/auth/verify` | Verify login code |

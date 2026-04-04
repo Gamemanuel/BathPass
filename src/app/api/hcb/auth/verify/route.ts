@@ -29,7 +29,15 @@ export async function POST(req: NextRequest) {
       { status: 501 }
     );
   }
-  const DEMO_STORED_CODE = process.env.DEMO_LOGIN_CODE ?? "123456";
+
+  const demoCode = process.env.DEMO_LOGIN_CODE;
+  if (!demoCode) {
+    return NextResponse.json(
+      { data: null, error: "DEMO_LOGIN_CODE env var not set" },
+      { status: 500 }
+    );
+  }
+  const DEMO_STORED_CODE = demoCode;
   const DEMO_EXPIRY = new Date(Date.now() + 10 * 60 * 1000);
 
   const result = validateLoginCode(code, DEMO_STORED_CODE, DEMO_EXPIRY);
